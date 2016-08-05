@@ -124,13 +124,3 @@ window.onload = function () {
         gameScene.style.display = 'block';
     })
 };
-
-
-// add baidu tongji
-var _hmt = _hmt || [];
-(function() {
-    var hm = document.createElement("script");
-    hm.src = "//hm.baidu.com/hm.js?d399ef1cfd58d073a40a71497208bc0a";
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(hm, s);
-})();

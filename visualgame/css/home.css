@@ -1,3 +1,4 @@
+@charset "utf-8";
 body {
   background-color: black;
   color: white;
@@ -108,5 +109,8 @@ body {
   background-size: 50%;
 }
 .hide {
+  display: none;
+}
+a[title='站长统计'] {
   display: none;
 }
