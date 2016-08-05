@@ -24,8 +24,8 @@ window.onload = function () {
 
     // reset game data
     var resetData = function () {
-        level = 1;
-        levelTitle.innerText = level;
+        level = 0;
+        levelTitle.innerText = level + 1;
         timeGap = 1000;
     };
     resetData();
@@ -93,7 +93,7 @@ window.onload = function () {
                 // success
                 // add level number,change title
                 level++;
-                levelTitle.innerText = level;
+                levelTitle.innerText = level + 1;
                 // decrease time gap
                 if (timeGap > 500) {
                     timeGap -= 50;
@@ -106,9 +106,10 @@ window.onload = function () {
                 }
             } else {
                 // failed
-                // put score to screen
+                // put score to screen and title
                 scoreText.innerText = level;
                 scoreRecordText.innerText = localStorage.highestLevel;
+                document.title = '动态视力测试 - 我通过了' + level + '关';
                 // show the game over scene
                 gameScene.style.display = 'none';
                 resultScene.style.display = 'block';
