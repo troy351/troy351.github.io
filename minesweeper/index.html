@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>minesweeper</title>
+    <link href="css/main.css" rel="stylesheet">
+</head>
+<body>
+<canvas id="minesweeper"></canvas>
+<script src="js/build/engine.js"></script>
+<script>
+    const ms = new MineSweeper({
+        gameCanvas: 'minesweeper',
+        rows: 20,
+        columns: 20,
+        mineCount: 20,
+        difficulty: 'easy'
+    });
+</script>
+</body>
+</html>
