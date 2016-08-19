@@ -1,1 +1,0 @@
-{"version":3,"sources":["../src/sound.js"],"names":[],"mappings":";;;;;;;;IAAa,K,WAAA,K,GACT,eAAY,KAAZ,EAAmB,MAAnB,EAA2B;AAAA;AAE1B,C","file":"sound.js","sourcesContent":["export class Sound {\n    constructor(width, height) {\n\n    }\n\n\n}"]}

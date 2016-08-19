@@ -1,7 +1,10 @@
-#minesweeper{
-    display: block;
-    width: 100px;
-    height: 50px;
-    margin: 100px auto;
-    border: 1px solid black;
+#minesweeper {
+  margin: 100px auto;
+  border: 1px solid red;
+}
+#minesweeper canvas {
+  display: block;
+  border: 1px solid black;
+  -webkit-user-select: none;
+  cursor: default;
 }

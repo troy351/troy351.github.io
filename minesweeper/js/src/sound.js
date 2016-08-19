@@ -1,7 +1,9 @@
-export class Sound {
-    constructor(width, height) {
+export default class Sound {
+    constructor() {
 
     }
 
+    playSound() {
 
+    }
 }
