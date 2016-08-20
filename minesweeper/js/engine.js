@@ -351,7 +351,7 @@ define(['exports', 'js/block'], function (exports, _block) {
                     }
                 };
 
-                if ('ontouchstart' in window) {
+                if (document.hasOwnProperty("ontouchstart")) {
                     alert('This game doesn\'t support touch screen, please use a desktop broswer.');
                     return;
                 }
