@@ -299,7 +299,7 @@ export default class MineSweeper {
             }
         };
 
-        if ('ontouchstart' in document.documentElement) {
+        if ('ontouchstart' in window) {
             alert('This game doesn\'t support touch screen, please use a desktop broswer.');
             return;
         }
