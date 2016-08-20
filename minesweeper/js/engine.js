@@ -1,4 +1,4 @@
-define(['exports', 'js/block'], function (exports, _block) {
+define(['exports', 'js/block.min'], function (exports, _block) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {

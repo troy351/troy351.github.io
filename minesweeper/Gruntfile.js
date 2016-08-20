@@ -11,8 +11,7 @@ module.exports = function (grunt) {
             dist: {
                 files: {
                     'js/engine.js': 'js/src/engine.js',
-                    'js/block.js': 'js/src/block.js',
-                    'js/sound.js': 'js/src/sound.js'
+                    'js/block.js': 'js/src/block.js'
                 }
             }
         },
@@ -33,8 +32,7 @@ module.exports = function (grunt) {
             build: {
                 files: {
                     'js/engine.min.js': ['js/engine.js'],
-                    'js/block.min.js': ['js/block.js'],
-                    'js/sound.min.js': ['js/sound.js']
+                    'js/block.min.js': ['js/block.js']
                 }
             }
         }
@@ -44,5 +42,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('default', ['babel', 'uglify']);
+    grunt.registerTask('default', ['uglify']);
 };
