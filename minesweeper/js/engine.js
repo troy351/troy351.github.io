@@ -351,14 +351,9 @@ define(['exports', 'js/block'], function (exports, _block) {
                     }
                 };
 
-                var events = {},
-                    isTouchScreen = false;
                 if ('ontouchstart' in document.documentElement) {
-                    events = { down: 'touchstart', move: 'touchmove', up: 'touchend' };
-                    isTouchScreen = true;
-                    timeGap == 0;
-                } else {
-                    events = { down: 'mousedown', move: 'mousemove', up: 'mouseup' };
+                    alert('This game doesn\'t support touch screen, please use a desktop broswer.');
+                    return;
                 }
 
                 var mouseDown = function mouseDown(event) {
@@ -371,26 +366,16 @@ define(['exports', 'js/block'], function (exports, _block) {
                         _this3._updateMap(currentButton, 'down', coor);
                     } else if (event.button === 0) {
                         // left click
-                        if (isTouchScreen) {
-                            timer = setTimeout(function () {
-                                currentButton = 'l';
-                                _this3._updateMap(currentButton, 'down', coor);
-                            }, timeGap);
-                        } else {
+                        timer = setTimeout(function () {
                             currentButton = 'l';
                             _this3._updateMap(currentButton, 'down', coor);
-                        }
+                        }, timeGap);
                     } else if (event.button === 2) {
                         // right click
-                        if (isTouchScreen) {
-                            timer = setTimeout(function () {
-                                currentButton = 'r';
-                                _this3._updateMap(currentButton, 'down', coor);
-                            }, timeGap);
-                        } else {
+                        timer = setTimeout(function () {
                             currentButton = 'r';
                             _this3._updateMap(currentButton, 'down', coor);
-                        }
+                        }, timeGap);
                     }
 
                     lastClickTime = Date.now();
@@ -409,15 +394,15 @@ define(['exports', 'js/block'], function (exports, _block) {
                             _this3._updateMap(currentButton, 'up', coor);
                         }
 
-                        window.removeEventListener(events.move, mouseMove);
-                        window.removeEventListener(events.up, mouseUp);
+                        window.removeEventListener('mousemove', mouseMove);
+                        window.removeEventListener('mouseup', mouseUp);
                     };
 
-                    window.addEventListener(events.move, mouseMove);
-                    window.addEventListener(events.up, mouseUp);
+                    window.addEventListener('mousemove', mouseMove);
+                    window.addEventListener('mouseup', mouseUp);
                 };
 
-                this.canvas.addEventListener(events.down, mouseDown);
+                this.canvas.addEventListener('mousedown', mouseDown);
             }
         }, {
             key: '_gameOver',

@@ -283,7 +283,7 @@ export default class MineSweeper {
     }
 
     _startGame() {
-        let timeGap = 50;
+        const timeGap = 50;
         let lastClickButton = -1;
         let lastClickTime = 0;
         let timer = null;
@@ -299,13 +299,9 @@ export default class MineSweeper {
             }
         };
 
-        let events = {}, isTouchScreen = false;
         if ('ontouchstart' in document.documentElement) {
-            events = {down: 'touchstart', move: 'touchmove', up: 'touchend'};
-            isTouchScreen = true;
-            timeGap == 0;
-        } else {
-            events = {down: 'mousedown', move: 'mousemove', up: 'mouseup'};
+            alert('This game doesn\'t support touch screen, please use a desktop broswer.');
+            return;
         }
 
         const mouseDown = (event)=> {
@@ -318,26 +314,16 @@ export default class MineSweeper {
                 this._updateMap(currentButton, 'down', coor);
             } else if (event.button === 0) {
                 // left click
-                if (isTouchScreen) {
-                    timer = setTimeout(()=> {
-                        currentButton = 'l';
-                        this._updateMap(currentButton, 'down', coor);
-                    }, timeGap)
-                } else {
+                timer = setTimeout(()=> {
                     currentButton = 'l';
                     this._updateMap(currentButton, 'down', coor);
-                }
+                }, timeGap)
             } else if (event.button === 2) {
                 // right click
-                if (isTouchScreen) {
-                    timer = setTimeout(()=> {
-                        currentButton = 'r';
-                        this._updateMap(currentButton, 'down', coor);
-                    }, timeGap)
-                } else {
+                timer = setTimeout(()=> {
                     currentButton = 'r';
                     this._updateMap(currentButton, 'down', coor);
-                }
+                }, timeGap)
             }
 
             lastClickTime = Date.now();
@@ -356,15 +342,15 @@ export default class MineSweeper {
                     this._updateMap(currentButton, 'up', coor);
                 }
 
-                window.removeEventListener(events.move, mouseMove);
-                window.removeEventListener(events.up, mouseUp);
+                window.removeEventListener('mousemove', mouseMove);
+                window.removeEventListener('mouseup', mouseUp);
             };
 
-            window.addEventListener(events.move, mouseMove);
-            window.addEventListener(events.up, mouseUp);
+            window.addEventListener('mousemove', mouseMove);
+            window.addEventListener('mouseup', mouseUp);
         };
 
-        this.canvas.addEventListener(events.down, mouseDown);
+        this.canvas.addEventListener('mousedown', mouseDown);
     }
 
     _gameOver(coor) {
