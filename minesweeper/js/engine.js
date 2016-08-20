@@ -78,7 +78,7 @@ define(['exports', 'js/block'], function (exports, _block) {
                 digitalWrapper.appendChild(this._time);
                 this.gameArea.appendChild(digitalWrapper);
 
-                this._face.addEventListener('mousedown', function (event) {
+                this._face.addEventListener('click', function (event) {
                     var target = event.srcElement;
                     target.className = 'normal';
                     _this._initMap();
@@ -351,6 +351,16 @@ define(['exports', 'js/block'], function (exports, _block) {
                     }
                 };
 
+                var events = {},
+                    isTouchScreen = false;
+                if ('ontouchstart' in document.documentElement) {
+                    events = { down: 'touchstart', move: 'touchmove', up: 'touchend' };
+                    isTouchScreen = true;
+                    timeGap == 0;
+                } else {
+                    events = { down: 'mousedown', move: 'mousemove', up: 'mouseup' };
+                }
+
                 var mouseDown = function mouseDown(event) {
                     var coor = getBlockPosition(event.offsetX, event.offsetY);
                     var currentButton = null;
@@ -361,16 +371,26 @@ define(['exports', 'js/block'], function (exports, _block) {
                         _this3._updateMap(currentButton, 'down', coor);
                     } else if (event.button === 0) {
                         // left click
-                        timer = setTimeout(function () {
+                        if (isTouchScreen) {
+                            timer = setTimeout(function () {
+                                currentButton = 'l';
+                                _this3._updateMap(currentButton, 'down', coor);
+                            }, timeGap);
+                        } else {
                             currentButton = 'l';
                             _this3._updateMap(currentButton, 'down', coor);
-                        }, timeGap);
+                        }
                     } else if (event.button === 2) {
                         // right click
-                        timer = setTimeout(function () {
+                        if (isTouchScreen) {
+                            timer = setTimeout(function () {
+                                currentButton = 'r';
+                                _this3._updateMap(currentButton, 'down', coor);
+                            }, timeGap);
+                        } else {
                             currentButton = 'r';
                             _this3._updateMap(currentButton, 'down', coor);
-                        }, timeGap);
+                        }
                     }
 
                     lastClickTime = Date.now();
@@ -389,15 +409,15 @@ define(['exports', 'js/block'], function (exports, _block) {
                             _this3._updateMap(currentButton, 'up', coor);
                         }
 
-                        window.removeEventListener('mousemove', mouseMove);
-                        window.removeEventListener('mouseup', mouseUp);
+                        window.removeEventListener(events.move, mouseMove);
+                        window.removeEventListener(events.up, mouseUp);
                     };
 
-                    window.addEventListener('mousemove', mouseMove);
-                    window.addEventListener('mouseup', mouseUp);
+                    window.addEventListener(events.move, mouseMove);
+                    window.addEventListener(events.up, mouseUp);
                 };
 
-                this.canvas.addEventListener('mousedown', mouseDown);
+                this.canvas.addEventListener(events.down, mouseDown);
             }
         }, {
             key: '_gameOver',
