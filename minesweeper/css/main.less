@@ -1,14 +1,108 @@
+@font-face {
+  font-family: "LCD";
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/LCDAT&TPhoneTimeDate.TTF) format('truetype');
+}
+
+.depress(@w:2px) {
+  border-left: @w solid #808080;
+  border-top: @w solid #808080;
+  border-bottom: @w solid white;
+  border-right: @w solid white;
+}
+
+.bulge(@w:2px) {
+  border-left: @w solid white;
+  border-top: @w solid white;
+  border-bottom: @w solid #808080;
+  border-right: @w solid #808080;
+}
+
 #minesweeper {
-  margin: 100px auto;
-  border: 1px solid red;
-  form {
+  margin: 150px auto;
+  background-color: #c0c0c0;
+  padding: 15px 24px 20px 20px;
+  border-radius: 5px;
+  p {
+    margin: 0 0 10px 0;
     //width: 100px;
+    a{
+      padding: 2px 6px;
+      margin-right: 5px;
+      font-family: Arial,sans-serif;
+      .bulge(1px);
+      border-radius: 3px;
+      cursor: pointer;
+      &:active{
+        .depress(1px);
+      }
+    }
+  }
+  & > div {
+    position: relative;
+    width: calc(~"100% - 10px");
+    padding: 6px;
+    margin-bottom: 8px;
+    .depress(3px);
+    overflow: hidden;
+    span {
+      font-size: 32px;
+      height: 24px;
+      font-family: "LCD", sans-serif;
+      color: red;
+      letter-spacing: 1px;
+      padding-left: 2px;
+      background-color: black;
+      .depress(2px);
+      &:first-child {
+        float: left;
+      }
+      &:last-child {
+        float: right;
+      }
+      &::before {
+        position: absolute;
+        content: '888';
+        height: 24px;
+        color: rgba(255, 0, 0, .35);
+      }
+    }
+    div {
+      position: absolute;
+      display: inline-block;
+      width: 25px;
+      height: 25px;
+      left: 50%;
+      margin-top: -1px;
+      margin-left: -14px;
+      .bulge(2px);
+      outline: 1px solid #808080;
+      background-size: 33px 33px;
+      background-position: 50%;
+      &:active {
+        background-position: 40% 40%;
+        .depress(2px);
+      }
+      &.normal {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAABCAgMAAACeOuh7AAAACVBMVEUAAAD//wAAAACtw4WAAAAAAXRSTlMAQObYZgAAAGlJREFUOMvd0sEJwCAMBdDi0f3iwRGcokt0BCH9U9ZPvQkJuYn/5gMhIf86KQlQR/IrUhCU1IVRS8YfptwRyTLTTMEjrUeE800RNeTPPlL5rCHh7rwXd7ekAAMD4l9wbYIvfuvW9vpydj62IJZM+4otwwAAAABJRU5ErkJggg==);
+      }
+      &.click {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAABCBAMAAAAReh3bAAAAD1BMVEUAAAAAAAD//wAAAACAgQDjp1+qAAAAAnRSTlMA91VKqocAAACJSURBVEjH7dTBCYAwDAXQQBdwhh8HKH4n0O4/k5IeAl7USrCH/ksuD1JSEhn5PYmWD4JcYCFzlEiER3OLSNbBCSMET1C4bgDmwnJWNgnWgajVCEHg+g5weisueSZyz8Km9U3MO6FriRJSu2v92wpE3gvvEiJ8X3xiSrkVAbt/I9quVNw9dTHSfw7T93FNWiuaWQAAAABJRU5ErkJggg==);
+      }
+      &.failed {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAABCAgMAAACeOuh7AAAACVBMVEUAAAD//wAAAACtw4WAAAAAAXRSTlMAQObYZgAAAGdJREFUOMvd0sEJgDAMhWHpsfu9HLKBTuESjlBoMqUGBU8lPC9C/+MHhdBkmani3hOpBoiTUhqizokBkexjqVA5sCo2ThATtrHENM8rdErufhNxN0Ky33hFcaWE5Bvkb+PjHeYXPncnl5KUyFrE83cAAAAASUVORK5CYII=);
+      }
+      &.win {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAABCAgMAAACeOuh7AAAADFBMVEUAAAD//wAAAACAgQCZQI+xAAAAAXRSTlMAQObYZgAAAHhJREFUOMvd0rENgCAUhGFD6SjucxRMYFhCl8DahkSucRr3Mc9oieYSK/7y6+Bd11KO3GQZCuA5v4lLsEZNCq78Wpced0GTSCvVxWVPMpAFmyIlXrLkuhATE+J+BEUynn4W+x+7V0bo3sTbOwX5vqC+DWF12p7b7gRcj6S7Xmc6CgAAAABJRU5ErkJggg==);
+      }
+    }
   }
   canvas {
-    //box-sizing: border-box;
     display: block;
-    border: 1px solid black;
     -webkit-user-select: none;
     cursor: default;
+    margin: 0 auto;
+    .depress(4px);
   }
 }

@@ -1,10 +1,113 @@
+@font-face {
+  font-family: "LCD";
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/LCDAT&TPhoneTimeDate.TTF) format('truetype');
+}
 #minesweeper {
-  margin: 100px auto;
-  border: 1px solid red;
+  margin: 150px auto;
+  background-color: #c0c0c0;
+  padding: 15px 24px 20px 20px;
+  border-radius: 5px;
+}
+#minesweeper p {
+  margin: 0 0 10px 0;
+}
+#minesweeper p a {
+  padding: 2px 6px;
+  margin-right: 5px;
+  font-family: Arial, sans-serif;
+  border-left: 1px solid white;
+  border-top: 1px solid white;
+  border-bottom: 1px solid #808080;
+  border-right: 1px solid #808080;
+  border-radius: 3px;
+  cursor: pointer;
+}
+#minesweeper p a:active {
+  border-left: 1px solid #808080;
+  border-top: 1px solid #808080;
+  border-bottom: 1px solid white;
+  border-right: 1px solid white;
+}
+#minesweeper > div {
+  position: relative;
+  width: calc(100% - 10px);
+  padding: 6px;
+  margin-bottom: 8px;
+  border-left: 3px solid #808080;
+  border-top: 3px solid #808080;
+  border-bottom: 3px solid white;
+  border-right: 3px solid white;
+  overflow: hidden;
+}
+#minesweeper > div span {
+  font-size: 32px;
+  height: 24px;
+  font-family: "LCD", sans-serif;
+  color: red;
+  letter-spacing: 1px;
+  padding-left: 2px;
+  background-color: black;
+  border-left: 2px solid #808080;
+  border-top: 2px solid #808080;
+  border-bottom: 2px solid white;
+  border-right: 2px solid white;
+}
+#minesweeper > div span:first-child {
+  float: left;
+}
+#minesweeper > div span:last-child {
+  float: right;
+}
+#minesweeper > div span::before {
+  position: absolute;
+  content: '888';
+  height: 24px;
+  color: rgba(255, 0, 0, 0.35);
+}
+#minesweeper > div div {
+  position: absolute;
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  left: 50%;
+  margin-top: -1px;
+  margin-left: -14px;
+  border-left: 2px solid white;
+  border-top: 2px solid white;
+  border-bottom: 2px solid #808080;
+  border-right: 2px solid #808080;
+  outline: 1px solid #808080;
+  background-size: 33px 33px;
+  background-position: 50%;
+}
+#minesweeper > div div:active {
+  background-position: 40% 40%;
+  border-left: 2px solid #808080;
+  border-top: 2px solid #808080;
+  border-bottom: 2px solid white;
+  border-right: 2px solid white;
+}
+#minesweeper > div div.normal {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAABCAgMAAACeOuh7AAAACVBMVEUAAAD//wAAAACtw4WAAAAAAXRSTlMAQObYZgAAAGlJREFUOMvd0sEJwCAMBdDi0f3iwRGcokt0BCH9U9ZPvQkJuYn/5gMhIf86KQlQR/IrUhCU1IVRS8YfptwRyTLTTMEjrUeE800RNeTPPlL5rCHh7rwXd7ekAAMD4l9wbYIvfuvW9vpydj62IJZM+4otwwAAAABJRU5ErkJggg==);
+}
+#minesweeper > div div.click {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAABCBAMAAAAReh3bAAAAD1BMVEUAAAAAAAD//wAAAACAgQDjp1+qAAAAAnRSTlMA91VKqocAAACJSURBVEjH7dTBCYAwDAXQQBdwhh8HKH4n0O4/k5IeAl7USrCH/ksuD1JSEhn5PYmWD4JcYCFzlEiER3OLSNbBCSMET1C4bgDmwnJWNgnWgajVCEHg+g5weisueSZyz8Km9U3MO6FriRJSu2v92wpE3gvvEiJ8X3xiSrkVAbt/I9quVNw9dTHSfw7T93FNWiuaWQAAAABJRU5ErkJggg==);
+}
+#minesweeper > div div.failed {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAABCAgMAAACeOuh7AAAACVBMVEUAAAD//wAAAACtw4WAAAAAAXRSTlMAQObYZgAAAGdJREFUOMvd0sEJgDAMhWHpsfu9HLKBTuESjlBoMqUGBU8lPC9C/+MHhdBkmani3hOpBoiTUhqizokBkexjqVA5sCo2ThATtrHENM8rdErufhNxN0Ky33hFcaWE5Bvkb+PjHeYXPncnl5KUyFrE83cAAAAASUVORK5CYII=);
+}
+#minesweeper > div div.win {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAABCAgMAAACeOuh7AAAADFBMVEUAAAD//wAAAACAgQCZQI+xAAAAAXRSTlMAQObYZgAAAHhJREFUOMvd0rENgCAUhGFD6SjucxRMYFhCl8DahkSucRr3Mc9oieYSK/7y6+Bd11KO3GQZCuA5v4lLsEZNCq78Wpced0GTSCvVxWVPMpAFmyIlXrLkuhATE+J+BEUynn4W+x+7V0bo3sTbOwX5vqC+DWF12p7b7gRcj6S7Xmc6CgAAAABJRU5ErkJggg==);
 }
 #minesweeper canvas {
   display: block;
-  border: 1px solid black;
   -webkit-user-select: none;
   cursor: default;
+  margin: 0 auto;
+  border-left: 4px solid #808080;
+  border-top: 4px solid #808080;
+  border-bottom: 4px solid white;
+  border-right: 4px solid white;
 }

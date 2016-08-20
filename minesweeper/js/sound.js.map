@@ -1,1 +1,0 @@
-{"version":3,"sources":["../src/sound.js"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;QAAqB,K;AACjB,yBAAc;AAAA;AAEb;;;;wCAEW,CAEX;;;;;;sBAPgB,K","file":"sound.js","sourcesContent":["export default class Sound {\n    constructor() {\n\n    }\n\n    playSound() {\n\n    }\n}"]}
