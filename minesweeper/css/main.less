@@ -192,8 +192,12 @@
     &:last-child {
       top: 75px;
     }
-    input {
-      //width: 100px;
-    }
+  }
+}
+
+@hack:~"screen\0";
+@media @hack {
+  .digital-wrapper span{
+    line-height: 0.8;
   }
 }

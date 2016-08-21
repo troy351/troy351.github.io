@@ -193,3 +193,8 @@
 .custom-level div:last-child {
   top: 75px;
 }
+@media screen\0 {
+  .digital-wrapper span {
+    line-height: 0.8;
+  }
+}
