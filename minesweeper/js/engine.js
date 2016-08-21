@@ -95,7 +95,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 // for custom level setter
                 this._levelSelector = document.createElement('div');
                 this._levelSelector.className = 'custom-level';
-                this._levelSelector.innerHTML = '\n            <form>\n                <p>Height: <input type="text" title="height"></p>\n                <p>Width: <input type="text" title="width"></p>\n                <p>Mines: <input type="text" title="mines"></p>\n                <div><input type="submit" value="Submit"></div>\n                <div><input type="button" value="Cancel"></div>\n            </form>';
+                this._levelSelector.innerHTML = '\n            <form>\n                <p>Width: <input type="text" title="width"></p>\n                <p>Height: <input type="text" title="height"></p>\n                <p>Mines: <input type="text" title="mines"></p>\n                <div><input type="submit" value="Submit"></div>\n                <div><input type="button" value="Cancel"></div>\n            </form>';
                 document.body.appendChild(this._levelSelector);
 
                 var mainGame = document.createElement('div');
@@ -523,7 +523,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                             clearInterval(_this4.timer);
                             _this4.selectingLevel = true;
                             // append current data
-                            var inputs = document.querySelectorAll('input');
+                            var inputs = document.querySelectorAll('.custom-level input');
                             inputs[0].value = _this4.options.columns;
                             inputs[1].value = _this4.options.rows;
                             inputs[2].value = _this4.options.mineTotal;

@@ -48,8 +48,8 @@ export default class MineSweeper {
         this._levelSelector.className = 'custom-level';
         this._levelSelector.innerHTML = `
             <form>
-                <p>Height: <input type="text" title="height"></p>
                 <p>Width: <input type="text" title="width"></p>
+                <p>Height: <input type="text" title="height"></p>
                 <p>Mines: <input type="text" title="mines"></p>
                 <div><input type="submit" value="Submit"></div>
                 <div><input type="button" value="Cancel"></div>
@@ -466,7 +466,7 @@ export default class MineSweeper {
                 clearInterval(this.timer);
                 this.selectingLevel = true;
                 // append current data
-                const inputs = document.querySelectorAll('input');
+                const inputs = document.querySelectorAll('.custom-level input');
                 inputs[0].value = this.options.columns;
                 inputs[1].value = this.options.rows;
                 inputs[2].value = this.options.mineTotal;
