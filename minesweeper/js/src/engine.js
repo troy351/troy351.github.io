@@ -12,19 +12,56 @@ export default class MineSweeper {
     _initGame() {
         this.gameArea = document.getElementById(this.options.gameArea);
 
-        // level selector
-        this.levelSelector = document.createElement('p');
-        this.levelSelector.innerHTML = '<a>Easy</a><a>Normal</a><a>Hard</a>';
-        this.gameArea.appendChild(this.levelSelector);
+        // menu
+        this._menuWrapper = document.createElement('div');
+        this._menuWrapper.className = 'menu';
+        this._menuWrapper.innerHTML = '<span>Menu</span>';
+        this._menu = document.createElement('ul');
+        this._menu.innerHTML = '<li>Start</li><a class="gap"></a><li class="current">Easy</li><li>Normal</li><li>Hard</li><li>Custom</li>';
+        this._menuWrapper.appendChild(this._menu);
+        this.gameArea.appendChild(this._menuWrapper);
 
-        this.levelSelector.addEventListener('click', (event)=> {
-            if (event.srcElement.nodeName === 'A') {
-                this.setLevel(event.srcElement.innerText.toLowerCase());
+        const menuButton = this._menuWrapper.getElementsByTagName('span')[0];
+        // event for menu show
+        menuButton.addEventListener('click', (event)=> {
+            this._menu.style.display = 'block';
+            menuButton.className = 'on';
+            event.stopPropagation();
+        });
+        // event for menu hide
+        window.addEventListener('click', (event)=> {
+            this._menu.style.display = 'none';
+            menuButton.className = '';
+        });
+        // event for menu click
+        this._menu.addEventListener('click', (event)=> {
+            if (event.srcElement.nodeName === 'LI') {
+                if (event.srcElement.innerText === 'Start') {
+                    this._initMap();
+                } else {
+                    this.setLevel(event.srcElement.innerText);
+                }
             }
         });
+        // for custom level setter
+        this._levelSelector = document.createElement('div');
+        this._levelSelector.className = 'custom-level';
+        this._levelSelector.innerHTML = `
+            <form>
+                <p>Height: <input type="text" title="height"></p>
+                <p>Width: <input type="text" title="width"></p>
+                <p>Mines: <input type="text" title="mines"></p>
+                <div><input type="submit" value="Submit"></div>
+                <div><input type="button" value="Cancel"></div>
+            </form>`;
+        document.body.appendChild(this._levelSelector);
 
+
+        const mainGame = document.createElement('div');
+        mainGame.className = 'main-game';
         //mines left, face, and timer;
         const digitalWrapper = document.createElement('div');
+        digitalWrapper.className = 'digital-wrapper';
         this._mines = document.createElement('span');
         this._time = document.createElement('span');
         this._time.innerHTML = '000';
@@ -33,18 +70,18 @@ export default class MineSweeper {
         digitalWrapper.appendChild(this._mines);
         digitalWrapper.appendChild(this._face);
         digitalWrapper.appendChild(this._time);
-        this.gameArea.appendChild(digitalWrapper);
+        mainGame.appendChild(digitalWrapper);
 
-        this._face.addEventListener('click', (event)=> {
-            const target = event.srcElement;
-            target.className = 'normal';
+        this._face.addEventListener('click', ()=> {
             this._initMap();
         });
 
         // game canvas
         this.canvas = document.createElement('canvas');
         this.canvas.innerText = 'Your browser does not support canvas, please upgrade your browser.';
-        this.gameArea.appendChild(this.canvas);
+        mainGame.appendChild(this.canvas);
+
+        this.gameArea.appendChild(mainGame);
 
         // init block
         Block.size = this.options.blockSize;
@@ -58,7 +95,7 @@ export default class MineSweeper {
 
     _initMap() {
         // set mines count
-        this._mines.innerText = this._addZero(this.options.mineCount);
+        this._mines.innerText = this._addZero(this.options.mineTotal);
 
         this.gameArea.style.width = this.options.blockSize * this.options.columns / 2 + 'px';
         // for retina display
@@ -68,6 +105,7 @@ export default class MineSweeper {
         this.canvas.style.height = this.options.blockSize * this.options.rows / 2 + 'px';
 
         this.firstClick = true;
+        this.selectingLevel = false;
         this.gameOver = false;
         this.win = false;
         this._face.className = 'normal';
@@ -87,7 +125,7 @@ export default class MineSweeper {
         // generate mines
         const mines = [];
         for (let i = 0; i < this.options.rows * this.options.columns; i++) {
-            if (i < this.options.mineCount) {
+            if (i < this.options.mineTotal) {
                 mines[i] = -1;
             } else {
                 mines[i] = 0;
@@ -106,7 +144,7 @@ export default class MineSweeper {
         }
 
         // the block at first click position can not be mine
-        const firstPosition = coor.i * this.options.rows + coor.j;
+        const firstPosition = coor.i * this.options.columns + coor.j;
         while (mines[firstPosition] === -1) {
             const ran = Math.floor(Math.random() * this.options.rows * this.options.columns)
             if (mines[ran] === 0) {
@@ -147,7 +185,7 @@ export default class MineSweeper {
 
     _updateMap(button, method, coor) {
         // gameover, do not respond any click event
-        if (this.gameOver || this.win) {
+        if (this.gameOver || this.win || this.selectingLevel) {
             return;
         }
         // set face
@@ -406,21 +444,52 @@ export default class MineSweeper {
 
     setLevel(level) {
         switch (level) {
-            case 'easy':
+            case 'Easy':
                 this.options.rows = 9;
                 this.options.columns = 9;
-                this.options.mineCount = 10;
+                this.options.mineTotal = 10;
+                this._menu.innerHTML = '<li>Start</li><a class="gap"></a><li class="current">Easy</li><li>Normal</li><li>Hard</li><li>Custom</li>';
                 break;
-            case 'normal':
+            case 'Normal':
                 this.options.rows = 16;
                 this.options.columns = 16;
-                this.options.mineCount = 40;
+                this.options.mineTotal = 40;
+                this._menu.innerHTML = '<li>Start</li><a class="gap"></a><li>Easy</li><li class="current">Normal</li><li>Hard</li><li>Custom</li>';
                 break;
-            case 'hard':
+            case 'Hard':
                 this.options.rows = 16;
                 this.options.columns = 30;
-                this.options.mineCount = 99;
+                this.options.mineTotal = 99;
+                this._menu.innerHTML = '<li>Start</li><a class="gap"></a><li>Easy</li><li>Normal</li><li class="current">Hard</li><li>Custom</li>';
                 break;
+            case 'Custom':
+                clearInterval(this.timer);
+                this.selectingLevel = true;
+                // append current data
+                const inputs = document.querySelectorAll('input');
+                inputs[0].value = this.options.columns;
+                inputs[1].value = this.options.rows;
+                inputs[2].value = this.options.mineTotal;
+                // add button listener
+                inputs[3].addEventListener('click', (event)=> {
+                    this._menu.innerHTML = '<li>Start</li><a class="gap"></a><li>Easy</li><li>Normal</li><li>Hard</li><li class="current">Custom</li>';
+                    this._levelSelector.style.display = 'none';
+                    const options = {
+                        rows: parseInt(inputs[1].value),
+                        columns: parseInt(inputs[0].value),
+                        mineTotal: parseInt(inputs[2].value)
+                    };
+                    this.options = options;
+                    this._initMap();
+                    event.preventDefault();
+                });
+                inputs[4].addEventListener('click', (event)=> {
+                    this._levelSelector.style.display = 'none';
+                    this.selectingLevel = false;
+                });
+                // show level selector
+                this._levelSelector.style.display = 'block';
+                return;
             default:
                 console.error('minesweeper: no such difficulty');
         }
@@ -445,7 +514,7 @@ export default class MineSweeper {
             gameArea: '',
             rows: 9,
             columns: 9,
-            mineCount: 10
+            mineTotal: 10
         };
 
         for (let key in options) {
@@ -453,15 +522,24 @@ export default class MineSweeper {
                 options[key] = _options[key];
             }
         }
-        // max rows && colums && mines
+        // max/min rows && colums && mines
         if (options.rows > 30) {
             options.rows = 30;
+        }
+        if (options.rows < 9) {
+            options.rows = 9;
         }
         if (options.columns > 40) {
             options.columns = 40;
         }
-        if (options.rows * options.columns / 4 < options.mineCount) {
-            options.mineCount = Math.floor(options.rows * options.columns / 4);
+        if (options.columns < 9) {
+            options.columns = 9;
+        }
+        if (options.mineTotal > options.rows * options.columns / 4) {
+            options.mineTotal = Math.floor(options.rows * options.columns / 4);
+        }
+        if (options.mineTotal < options.rows * options.columns / 8) {
+            options.mineTotal = Math.floor(options.rows * options.columns / 8);
         }
         // can not set by users
         options.blockSize = 40;

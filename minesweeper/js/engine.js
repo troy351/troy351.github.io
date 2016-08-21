@@ -13,6 +13,12 @@ define(['exports', 'js/block.min'], function (exports, _block) {
         };
     }
 
+    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+        return typeof obj;
+    } : function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+    };
+
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
             throw new TypeError("Cannot call a class as a function");
@@ -55,19 +61,48 @@ define(['exports', 'js/block.min'], function (exports, _block) {
 
                 this.gameArea = document.getElementById(this.options.gameArea);
 
-                // level selector
-                this.levelSelector = document.createElement('p');
-                this.levelSelector.innerHTML = '<a>Easy</a><a>Normal</a><a>Hard</a>';
-                this.gameArea.appendChild(this.levelSelector);
+                // menu
+                this._menuWrapper = document.createElement('div');
+                this._menuWrapper.className = 'menu';
+                this._menuWrapper.innerHTML = '<span>Menu</span>';
+                this._menu = document.createElement('ul');
+                this._menu.innerHTML = '<li>Start</li><a class="gap"></a><li class="current">Easy</li><li>Normal</li><li>Hard</li><li>Custom</li>';
+                this._menuWrapper.appendChild(this._menu);
+                this.gameArea.appendChild(this._menuWrapper);
 
-                this.levelSelector.addEventListener('click', function (event) {
-                    if (event.srcElement.nodeName === 'A') {
-                        _this.setLevel(event.srcElement.innerText.toLowerCase());
+                var menuButton = this._menuWrapper.getElementsByTagName('span')[0];
+                // event for menu show
+                menuButton.addEventListener('click', function (event) {
+                    _this._menu.style.display = 'block';
+                    menuButton.className = 'on';
+                    event.stopPropagation();
+                });
+                // event for menu hide
+                window.addEventListener('click', function (event) {
+                    _this._menu.style.display = 'none';
+                    menuButton.className = '';
+                });
+                // event for menu click
+                this._menu.addEventListener('click', function (event) {
+                    if (event.srcElement.nodeName === 'LI') {
+                        if (event.srcElement.innerText === 'Start') {
+                            _this._initMap();
+                        } else {
+                            _this.setLevel(event.srcElement.innerText);
+                        }
                     }
                 });
+                // for custom level setter
+                this._levelSelector = document.createElement('div');
+                this._levelSelector.className = 'custom-level';
+                this._levelSelector.innerHTML = '\n            <form>\n                <p>Height: <input type="text" title="height"></p>\n                <p>Width: <input type="text" title="width"></p>\n                <p>Mines: <input type="text" title="mines"></p>\n                <div><input type="submit" value="Submit"></div>\n                <div><input type="button" value="Cancel"></div>\n            </form>';
+                document.body.appendChild(this._levelSelector);
 
+                var mainGame = document.createElement('div');
+                mainGame.className = 'main-game';
                 //mines left, face, and timer;
                 var digitalWrapper = document.createElement('div');
+                digitalWrapper.className = 'digital-wrapper';
                 this._mines = document.createElement('span');
                 this._time = document.createElement('span');
                 this._time.innerHTML = '000';
@@ -76,18 +111,18 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 digitalWrapper.appendChild(this._mines);
                 digitalWrapper.appendChild(this._face);
                 digitalWrapper.appendChild(this._time);
-                this.gameArea.appendChild(digitalWrapper);
+                mainGame.appendChild(digitalWrapper);
 
-                this._face.addEventListener('click', function (event) {
-                    var target = event.srcElement;
-                    target.className = 'normal';
+                this._face.addEventListener('click', function () {
                     _this._initMap();
                 });
 
                 // game canvas
                 this.canvas = document.createElement('canvas');
                 this.canvas.innerText = 'Your browser does not support canvas, please upgrade your browser.';
-                this.gameArea.appendChild(this.canvas);
+                mainGame.appendChild(this.canvas);
+
+                this.gameArea.appendChild(mainGame);
 
                 // init block
                 _block2.default.size = this.options.blockSize;
@@ -102,7 +137,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
             key: '_initMap',
             value: function _initMap() {
                 // set mines count
-                this._mines.innerText = this._addZero(this.options.mineCount);
+                this._mines.innerText = this._addZero(this.options.mineTotal);
 
                 this.gameArea.style.width = this.options.blockSize * this.options.columns / 2 + 'px';
                 // for retina display
@@ -112,6 +147,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 this.canvas.style.height = this.options.blockSize * this.options.rows / 2 + 'px';
 
                 this.firstClick = true;
+                this.selectingLevel = false;
                 this.gameOver = false;
                 this.win = false;
                 this._face.className = 'normal';
@@ -134,7 +170,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 // generate mines
                 var mines = [];
                 for (var i = 0; i < this.options.rows * this.options.columns; i++) {
-                    if (i < this.options.mineCount) {
+                    if (i < this.options.mineTotal) {
                         mines[i] = -1;
                     } else {
                         mines[i] = 0;
@@ -153,7 +189,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 }
 
                 // the block at first click position can not be mine
-                var firstPosition = coor.i * this.options.rows + coor.j;
+                var firstPosition = coor.i * this.options.columns + coor.j;
                 while (mines[firstPosition] === -1) {
                     var _ran = Math.floor(Math.random() * this.options.rows * this.options.columns);
                     if (mines[_ran] === 0) {
@@ -195,7 +231,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
             key: '_updateMap',
             value: function _updateMap(button, method, coor) {
                 // gameover, do not respond any click event
-                if (this.gameOver || this.win) {
+                if (this.gameOver || this.win || this.selectingLevel) {
                     return;
                 }
                 // set face
@@ -461,26 +497,64 @@ define(['exports', 'js/block.min'], function (exports, _block) {
         }, {
             key: 'setLevel',
             value: function setLevel(level) {
-                switch (level) {
-                    case 'easy':
-                        this.options.rows = 9;
-                        this.options.columns = 9;
-                        this.options.mineCount = 10;
-                        break;
-                    case 'normal':
-                        this.options.rows = 16;
-                        this.options.columns = 16;
-                        this.options.mineCount = 40;
-                        break;
-                    case 'hard':
-                        this.options.rows = 16;
-                        this.options.columns = 30;
-                        this.options.mineCount = 99;
-                        break;
-                    default:
-                        console.error('minesweeper: no such difficulty');
-                }
+                var _this4 = this;
 
+                var _ret = function () {
+                    switch (level) {
+                        case 'Easy':
+                            _this4.options.rows = 9;
+                            _this4.options.columns = 9;
+                            _this4.options.mineTotal = 10;
+                            _this4._menu.innerHTML = '<li>Start</li><a class="gap"></a><li class="current">Easy</li><li>Normal</li><li>Hard</li><li>Custom</li>';
+                            break;
+                        case 'Normal':
+                            _this4.options.rows = 16;
+                            _this4.options.columns = 16;
+                            _this4.options.mineTotal = 40;
+                            _this4._menu.innerHTML = '<li>Start</li><a class="gap"></a><li>Easy</li><li class="current">Normal</li><li>Hard</li><li>Custom</li>';
+                            break;
+                        case 'Hard':
+                            _this4.options.rows = 16;
+                            _this4.options.columns = 30;
+                            _this4.options.mineTotal = 99;
+                            _this4._menu.innerHTML = '<li>Start</li><a class="gap"></a><li>Easy</li><li>Normal</li><li class="current">Hard</li><li>Custom</li>';
+                            break;
+                        case 'Custom':
+                            clearInterval(_this4.timer);
+                            _this4.selectingLevel = true;
+                            // append current data
+                            var inputs = document.querySelectorAll('input');
+                            inputs[0].value = _this4.options.columns;
+                            inputs[1].value = _this4.options.rows;
+                            inputs[2].value = _this4.options.mineTotal;
+                            // add button listener
+                            inputs[3].addEventListener('click', function (event) {
+                                _this4._menu.innerHTML = '<li>Start</li><a class="gap"></a><li>Easy</li><li>Normal</li><li>Hard</li><li class="current">Custom</li>';
+                                _this4._levelSelector.style.display = 'none';
+                                var options = {
+                                    rows: parseInt(inputs[1].value),
+                                    columns: parseInt(inputs[0].value),
+                                    mineTotal: parseInt(inputs[2].value)
+                                };
+                                _this4.options = options;
+                                _this4._initMap();
+                                event.preventDefault();
+                            });
+                            inputs[4].addEventListener('click', function (event) {
+                                _this4._levelSelector.style.display = 'none';
+                                _this4.selectingLevel = false;
+                            });
+                            // show level selector
+                            _this4._levelSelector.style.display = 'block';
+                            return {
+                                v: void 0
+                            };
+                        default:
+                            console.error('minesweeper: no such difficulty');
+                    }
+                }();
+
+                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
                 this._initMap();
             }
         }, {
@@ -504,7 +578,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                     gameArea: '',
                     rows: 9,
                     columns: 9,
-                    mineCount: 10
+                    mineTotal: 10
                 };
 
                 for (var key in options) {
@@ -512,15 +586,24 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                         options[key] = _options[key];
                     }
                 }
-                // max rows && colums && mines
+                // max/min rows && colums && mines
                 if (options.rows > 30) {
                     options.rows = 30;
+                }
+                if (options.rows < 9) {
+                    options.rows = 9;
                 }
                 if (options.columns > 40) {
                     options.columns = 40;
                 }
-                if (options.rows * options.columns / 4 < options.mineCount) {
-                    options.mineCount = Math.floor(options.rows * options.columns / 4);
+                if (options.columns < 9) {
+                    options.columns = 9;
+                }
+                if (options.mineTotal > options.rows * options.columns / 4) {
+                    options.mineTotal = Math.floor(options.rows * options.columns / 4);
+                }
+                if (options.mineTotal < options.rows * options.columns / 8) {
+                    options.mineTotal = Math.floor(options.rows * options.columns / 8);
                 }
                 // can not set by users
                 options.blockSize = 40;

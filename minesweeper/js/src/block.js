@@ -1,7 +1,7 @@
 export default class Block {
     /**
      * construtor of block class
-     * @param type the type of block on display enmu['blank','cover','mine','flag','question','number']
+     * @param type the type of block on display enum['blank','cover','flag','question','number']
      * @param number the number of block(if blank, set 0; if mine, set -1)
      * @param x row number
      * @param y column number
