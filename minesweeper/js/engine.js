@@ -144,8 +144,8 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 // shuffle mines
 
                 // use [Fisher-Yates shuffle] to shuffle mines
-                for (var _i = 1; _i < this.options.rows * this.options.columns; _i++) {
-                    var ran = Math.ceil(Math.random() * _i);
+                for (var _i = this.options.rows * this.options.columns - 1; _i > 0; _i--) {
+                    var ran = Math.floor(Math.random() * _i);
 
                     var temp = mines[_i];
                     mines[_i] = mines[ran];
@@ -155,7 +155,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 // the block at first click position can not be mine
                 var firstPosition = coor.i * this.options.rows + coor.j;
                 while (mines[firstPosition] === -1) {
-                    var _ran = Math.ceil(Math.random() * this.options.rows * this.options.columns);
+                    var _ran = Math.floor(Math.random() * this.options.rows * this.options.columns);
                     if (mines[_ran] === 0) {
                         var _temp = mines[firstPosition];
                         mines[firstPosition] = mines[_ran];
@@ -166,7 +166,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 // set mines
                 for (var _i2 = 0; _i2 < this.options.rows; _i2++) {
                     for (var j = 0; j < this.options.columns; j++) {
-                        this.map[_i2][j].number = mines[_i2 * this.options.rows + j];
+                        this.map[_i2][j].number = mines[_i2 * this.options.columns + j];
                     }
                 }
 
@@ -184,8 +184,6 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                         }
                     }
                 }
-
-                // this._shownMap();
 
                 // set timer
                 this._time.innerText = '000';

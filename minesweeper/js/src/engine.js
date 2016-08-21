@@ -97,8 +97,8 @@ export default class MineSweeper {
         // shuffle mines
 
         // use [Fisher-Yates shuffle] to shuffle mines
-        for (let i = 1; i < this.options.rows * this.options.columns; i++) {
-            const ran = Math.ceil(Math.random() * i);
+        for (let i = this.options.rows * this.options.columns - 1; i > 0; i--) {
+            const ran = Math.floor(Math.random() * i);
 
             let temp = mines[i];
             mines[i] = mines[ran];
@@ -108,7 +108,7 @@ export default class MineSweeper {
         // the block at first click position can not be mine
         const firstPosition = coor.i * this.options.rows + coor.j;
         while (mines[firstPosition] === -1) {
-            const ran = Math.ceil(Math.random() * this.options.rows * this.options.columns)
+            const ran = Math.floor(Math.random() * this.options.rows * this.options.columns)
             if (mines[ran] === 0) {
                 let temp = mines[firstPosition];
                 mines[firstPosition] = mines[ran];
@@ -119,7 +119,7 @@ export default class MineSweeper {
         // set mines
         for (let i = 0; i < this.options.rows; i++) {
             for (let j = 0; j < this.options.columns; j++) {
-                this.map[i][j].number = mines[i * this.options.rows + j];
+                this.map[i][j].number = mines[i * this.options.columns + j];
             }
         }
 
@@ -137,8 +137,6 @@ export default class MineSweeper {
                 }
             }
         }
-
-        // this._shownMap();
 
         // set timer
         this._time.innerText = '000';
