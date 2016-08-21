@@ -466,7 +466,7 @@ export default class MineSweeper {
                 clearInterval(this.timer);
                 this.selectingLevel = true;
                 // append current data
-                const inputs = document.querySelectorAll('.custom-level input');
+                const inputs = this._levelSelector.getElementsByTagName('input');
                 inputs[0].value = this.options.columns;
                 inputs[1].value = this.options.rows;
                 inputs[2].value = this.options.mineTotal;

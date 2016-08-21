@@ -523,7 +523,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                             clearInterval(_this4.timer);
                             _this4.selectingLevel = true;
                             // append current data
-                            var inputs = document.querySelectorAll('.custom-level input');
+                            var inputs = _this4._levelSelector.getElementsByTagName('input');
                             inputs[0].value = _this4.options.columns;
                             inputs[1].value = _this4.options.rows;
                             inputs[2].value = _this4.options.mineTotal;
