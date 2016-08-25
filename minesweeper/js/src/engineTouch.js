@@ -5,7 +5,7 @@ export default class MineSweeper {
         this.options = options;
 
         this._initGame();
-        this._initMap();
+        this.setLevel('Easy');
         this._startGame();
     }
 
@@ -48,9 +48,9 @@ export default class MineSweeper {
         this._levelSelector.className = 'custom-level';
         this._levelSelector.innerHTML = `
             <form>
-                <p>Width: <input type="text" title="width"></p>
-                <p>Height: <input type="text" title="height"></p>
-                <p>Mines: <input type="text" title="mines"></p>
+                <p>Width: <input type="number" title="width"></p>
+                <p>Height: <input type="number" title="height"></p>
+                <p>Mines: <input type="number" title="mines"></p>
                 <div><input type="submit" value="Submit"></div>
                 <div><input type="button" value="Cancel"></div>
             </form>`;
@@ -86,25 +86,20 @@ export default class MineSweeper {
         // init block
         Block.size = this.options.blockSize;
         Block.ctx = this.canvas.getContext('2d');
-
-        // prevent context menu
-        window.addEventListener('contextmenu', function (event) {
-            event.preventDefault();
-        });
     }
 
     _initMap() {
         // set mines count
         this._mines.innerText = this._addZero(this.options.mineTotal);
 
-        this.gameArea.style.width = this.options.blockSize * this.options.columns / 2 + 'px';
+        this.gameArea.style.width = this.options.blockSize * this.options.columns + 'px';
         // for retina display
         this.canvas.width = this.options.blockSize * this.options.columns;
         this.canvas.height = this.options.blockSize * this.options.rows;
-        this.canvas.style.width = this.options.blockSize * this.options.columns / 2 + 'px';
-        this.canvas.style.height = this.options.blockSize * this.options.rows / 2 + 'px';
+        this.canvas.style.width = this.options.blockSize * this.options.columns + 'px';
+        this.canvas.style.height = this.options.blockSize * this.options.rows + 'px';
 
-        this.firstClick = true;
+        this.firstTouch = true;
         this.selectingLevel = false;
         this.gameOver = false;
         this.win = false;
@@ -143,7 +138,7 @@ export default class MineSweeper {
             mines[ran] = temp;
         }
 
-        // the block at first click position can not be mine
+        // the block at first touch position can not be mine
         const firstPosition = coor.i * this.options.columns + coor.j;
         while (mines[firstPosition] === -1) {
             const ran = Math.floor(Math.random() * this.options.rows * this.options.columns)
@@ -183,19 +178,14 @@ export default class MineSweeper {
         }, 1000);
     }
 
-    _updateMap(button, method, coor) {
-        // gameover, do not respond any click event
+    _updateMap(method, coor) {
+        // gameover, do not respond any touch event
         if (this.gameOver || this.win || this.selectingLevel) {
             return;
         }
-        // set face
-        if ((button === 'l' || button === 'lr') && method === 'down') {
-            this._face.className = 'click';
-        } else if (method === 'up') {
-            this._face.className = 'normal';
-        }
-        // for r & down
-        if (button === 'r') {
+
+        // for double tap on a unknown block
+        if (method === 'db' && this.map[coor.i][coor.j].type !== 'blank' && this.map[coor.i][coor.j].type !== 'number') {
             switch (this.map[coor.i][coor.j].type) {
                 case 'cover':
                     this.map[coor.i][coor.j].type = 'flag';
@@ -211,10 +201,10 @@ export default class MineSweeper {
             }
         }
 
-        // for l & up
-        if (button === 'l' && method === 'up' && coor !== false) {
-            if (this.firstClick) {
-                this.firstClick = false;
+        // for single touch on unknown block
+        if (coor !== false && method === 't' && this.map[coor.i][coor.j].type !== 'blank' && this.map[coor.i][coor.j].type !== 'number') {
+            if (this.firstTouch) {
+                this.firstTouch = false;
                 this._setMines(coor);
             }
 
@@ -228,8 +218,8 @@ export default class MineSweeper {
             }
         }
 
-        // for lr & up
-        if (button === 'lr' && method === 'up' && coor !== false) {
+        // for double tap on a known block
+        if (coor !== false && method === 'db' && ( this.map[coor.i][coor.j].type === 'blank' || this.map[coor.i][coor.j].type === 'number')) {
             if (this.map[coor.i][coor.j].type === 'number') {
                 // count flag around coor
                 let flags = 0;
@@ -269,24 +259,8 @@ export default class MineSweeper {
                 if (this.map[i][j].number !== -1 && this.map[i][j].type !== 'number' && this.map[i][j].type !== 'blank') {
                     this.win = false;
                 }
-                if (button === 'lr' && (method === 'down' || method === 'move')) {
-                    // for lr & down/move
-                    if (Math.abs(coor.i - i) < 2 && Math.abs(coor.j - j) < 2) {
-                        this.map[i][j].draw(true);
-                    } else {
-                        this.map[i][j].draw(false);
-                    }
-                } else if (button === 'l' && (method === 'down' || method === 'move') && this.map[i][j].type === 'cover') {
-                    // for l & down/move
-                    if (i === coor.i && j === coor.j) {
-                        this.map[i][j].draw(true);
-                    } else {
-                        this.map[i][j].draw(false);
-                    }
-                } else {
-                    // for others
-                    this.map[i][j].draw(false);
-                }
+
+                this.map[i][j].draw(false);
             }
         }
         if (this.win) {
@@ -319,15 +293,14 @@ export default class MineSweeper {
     }
 
     _startGame() {
-        const timeGap = 50;
-        let lastClickButton = -1;
-        let lastClickTime = 0;
+        const timeGap = 200;
+        let lastTouchCoor = {i: 0, j: 0};
+        let lastTouchTime = 0;
         let timer = null;
 
         const getBlockPosition = (x, y)=> {
-            // * 2 for retina display
-            const j = Math.floor(x / this.options.blockSize * 2);
-            const i = Math.floor(y / this.options.blockSize * 2);
+            const j = Math.floor(x / this.options.blockSize);
+            const i = Math.floor(y / this.options.blockSize);
             if (i < this.options.rows && i >= 0 && j < this.options.columns && j >= 0) {
                 return {i: i, j: j};
             } else {
@@ -335,58 +308,57 @@ export default class MineSweeper {
             }
         };
 
-        // if touch screen(mobile device), jump to touch version
-        if (window.hasOwnProperty("ontouchstart")) {
-            window.location.href = 'index_touch.html';
-        }
+        this.canvas.addEventListener('touchstart', (event)=> {
+            const coor = getBlockPosition(event.targetTouches[0].pageX - this.clientRect.left, event.targetTouches[0].pageY - this.clientRect.top);
 
-        const mouseDown = (event)=> {
-            const coor = getBlockPosition(event.offsetX, event.offsetY);
-            let currentButton = null;
-            if (event.button + lastClickButton === 2 && Date.now() - lastClickTime < timeGap) {
-                // left && right click
+            let touchCancel = false;
+            let touchMethod = null;
+            if (lastTouchCoor.i === coor.i && lastTouchCoor.j === coor.j && Date.now() - lastTouchTime < timeGap) {
+                // double touch
                 clearTimeout(timer);
-                currentButton = 'lr';
-                this._updateMap(currentButton, 'down', coor);
-            } else if (event.button === 0) {
-                // left click
-                timer = setTimeout(()=> {
-                    currentButton = 'l';
-                    this._updateMap(currentButton, 'down', coor);
-                }, timeGap)
-            } else if (event.button === 2) {
-                // right click
-                timer = setTimeout(()=> {
-                    currentButton = 'r';
-                    this._updateMap(currentButton, 'down', coor);
-                }, timeGap)
+                touchMethod = 'db';
+            } else {
+                // single touch
+                touchMethod = 't';
             }
+            // update current touch
+            lastTouchTime = Date.now();
+            lastTouchCoor.i = coor.i;
+            lastTouchCoor.j = coor.j;
+            // update face
+            this._face.className = 'click';
 
-            lastClickTime = Date.now();
-            lastClickButton = event.button;
+            const touchMove = (event)=> {
+                if (touchCancel) {
+                    return;
+                }
+                var rect = event.target.getBoundingClientRect();
+                const coor = getBlockPosition(event.changedTouches[0].pageX - this.clientRect.left, event.changedTouches[0].pageY - this.clientRect.top);
 
-            const mouseMove = (event)=> {
-                const coor = getBlockPosition(event.offsetX, event.offsetY);
-                if (currentButton === 'l' || currentButton === 'lr') {
-                    this._updateMap(currentButton, 'move', coor);
+                if (lastTouchCoor.i !== coor.i || lastTouchCoor.j !== coor.j) {
+                    touchCancel = true;
                 }
             };
 
-            const mouseUp = (event)=> {
-                const coor = getBlockPosition(event.offsetX, event.offsetY);
-                if (currentButton === 'l' || currentButton === 'lr') {
-                    this._updateMap(currentButton, 'up', coor);
+            const touchEnd = (event)=> {
+                if (!touchCancel) {
+                    if (touchMethod === 'db') {
+                        this._updateMap('db', coor);
+                    } else {
+                        timer = setTimeout(()=> {
+                            this._updateMap('t', coor);
+                        }, timeGap)
+                    }
                 }
-
-                window.removeEventListener('mousemove', mouseMove);
-                window.removeEventListener('mouseup', mouseUp);
+                // update face
+                this._face.className = 'normal';
+                window.removeEventListener('touchmove', touchMove);
+                window.removeEventListener('touchend', touchEnd);
             };
-
-            window.addEventListener('mousemove', mouseMove);
-            window.addEventListener('mouseup', mouseUp);
-        };
-
-        this.canvas.addEventListener('mousedown', mouseDown);
+            //
+            window.addEventListener('touchmove', touchMove);
+            window.addEventListener('touchend', touchEnd);
+        });
     }
 
     _gameOver(coor) {
@@ -494,6 +466,9 @@ export default class MineSweeper {
                 console.error('minesweeper: no such difficulty');
         }
 
+        window.scrollTo(0, 0);
+        this.clientRect = this.canvas.getBoundingClientRect();
+
         this._initMap();
     }
 
@@ -512,9 +487,9 @@ export default class MineSweeper {
     set options(_options) {
         const options = {
             gameArea: '',
-            rows: 9,
-            columns: 9,
-            mineTotal: 10
+            rows: 0,
+            columns: 0,
+            mineTotal: 0
         };
 
         for (let key in options) {

@@ -50,7 +50,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
             this.options = options;
 
             this._initGame();
-            this._initMap();
+            this.setLevel('Easy');
             this._startGame();
         }
 
@@ -95,7 +95,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 // for custom level setter
                 this._levelSelector = document.createElement('div');
                 this._levelSelector.className = 'custom-level';
-                this._levelSelector.innerHTML = '\n            <form>\n                <p>Width: <input type="text" title="width"></p>\n                <p>Height: <input type="text" title="height"></p>\n                <p>Mines: <input type="text" title="mines"></p>\n                <div><input type="submit" value="Submit"></div>\n                <div><input type="button" value="Cancel"></div>\n            </form>';
+                this._levelSelector.innerHTML = '\n            <form>\n                <p>Width: <input type="number" title="width"></p>\n                <p>Height: <input type="number" title="height"></p>\n                <p>Mines: <input type="number" title="mines"></p>\n                <div><input type="submit" value="Submit"></div>\n                <div><input type="button" value="Cancel"></div>\n            </form>';
                 document.body.appendChild(this._levelSelector);
 
                 var mainGame = document.createElement('div');
@@ -127,11 +127,6 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 // init block
                 _block2.default.size = this.options.blockSize;
                 _block2.default.ctx = this.canvas.getContext('2d');
-
-                // prevent context menu
-                window.addEventListener('contextmenu', function (event) {
-                    event.preventDefault();
-                });
             }
         }, {
             key: '_initMap',
@@ -139,14 +134,14 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 // set mines count
                 this._mines.innerText = this._addZero(this.options.mineTotal);
 
-                this.gameArea.style.width = this.options.blockSize * this.options.columns / 2 + 'px';
+                this.gameArea.style.width = this.options.blockSize * this.options.columns + 'px';
                 // for retina display
                 this.canvas.width = this.options.blockSize * this.options.columns;
                 this.canvas.height = this.options.blockSize * this.options.rows;
-                this.canvas.style.width = this.options.blockSize * this.options.columns / 2 + 'px';
-                this.canvas.style.height = this.options.blockSize * this.options.rows / 2 + 'px';
+                this.canvas.style.width = this.options.blockSize * this.options.columns + 'px';
+                this.canvas.style.height = this.options.blockSize * this.options.rows + 'px';
 
-                this.firstClick = true;
+                this.firstTouch = true;
                 this.selectingLevel = false;
                 this.gameOver = false;
                 this.win = false;
@@ -188,7 +183,7 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                     mines[ran] = temp;
                 }
 
-                // the block at first click position can not be mine
+                // the block at first touch position can not be mine
                 var firstPosition = coor.i * this.options.columns + coor.j;
                 while (mines[firstPosition] === -1) {
                     var _ran = Math.floor(Math.random() * this.options.rows * this.options.columns);
@@ -229,19 +224,14 @@ define(['exports', 'js/block.min'], function (exports, _block) {
             }
         }, {
             key: '_updateMap',
-            value: function _updateMap(button, method, coor) {
-                // gameover, do not respond any click event
+            value: function _updateMap(method, coor) {
+                // gameover, do not respond any touch event
                 if (this.gameOver || this.win || this.selectingLevel) {
                     return;
                 }
-                // set face
-                if ((button === 'l' || button === 'lr') && method === 'down') {
-                    this._face.className = 'click';
-                } else if (method === 'up') {
-                    this._face.className = 'normal';
-                }
-                // for r & down
-                if (button === 'r') {
+
+                // for double tap on a unknown block
+                if (method === 'db' && this.map[coor.i][coor.j].type !== 'blank' && this.map[coor.i][coor.j].type !== 'number') {
                     switch (this.map[coor.i][coor.j].type) {
                         case 'cover':
                             this.map[coor.i][coor.j].type = 'flag';
@@ -257,10 +247,10 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                     }
                 }
 
-                // for l & up
-                if (button === 'l' && method === 'up' && coor !== false) {
-                    if (this.firstClick) {
-                        this.firstClick = false;
+                // for single touch on unknown block
+                if (coor !== false && method === 't' && this.map[coor.i][coor.j].type !== 'blank' && this.map[coor.i][coor.j].type !== 'number') {
+                    if (this.firstTouch) {
+                        this.firstTouch = false;
                         this._setMines(coor);
                     }
 
@@ -274,8 +264,8 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                     }
                 }
 
-                // for lr & up
-                if (button === 'lr' && method === 'up' && coor !== false) {
+                // for double tap on a known block
+                if (coor !== false && method === 'db' && (this.map[coor.i][coor.j].type === 'blank' || this.map[coor.i][coor.j].type === 'number')) {
                     if (this.map[coor.i][coor.j].type === 'number') {
                         // count flag around coor
                         var flags = 0;
@@ -315,24 +305,8 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                         if (this.map[i][j].number !== -1 && this.map[i][j].type !== 'number' && this.map[i][j].type !== 'blank') {
                             this.win = false;
                         }
-                        if (button === 'lr' && (method === 'down' || method === 'move')) {
-                            // for lr & down/move
-                            if (Math.abs(coor.i - i) < 2 && Math.abs(coor.j - j) < 2) {
-                                this.map[i][j].draw(true);
-                            } else {
-                                this.map[i][j].draw(false);
-                            }
-                        } else if (button === 'l' && (method === 'down' || method === 'move') && this.map[i][j].type === 'cover') {
-                            // for l & down/move
-                            if (i === coor.i && j === coor.j) {
-                                this.map[i][j].draw(true);
-                            } else {
-                                this.map[i][j].draw(false);
-                            }
-                        } else {
-                            // for others
-                            this.map[i][j].draw(false);
-                        }
+
+                        this.map[i][j].draw(false);
                     }
                 }
                 if (this.win) {
@@ -369,15 +343,14 @@ define(['exports', 'js/block.min'], function (exports, _block) {
             value: function _startGame() {
                 var _this3 = this;
 
-                var timeGap = 50;
-                var lastClickButton = -1;
-                var lastClickTime = 0;
+                var timeGap = 200;
+                var lastTouchCoor = { i: 0, j: 0 };
+                var lastTouchTime = 0;
                 var timer = null;
 
                 var getBlockPosition = function getBlockPosition(x, y) {
-                    // * 2 for retina display
-                    var j = Math.floor(x / _this3.options.blockSize * 2);
-                    var i = Math.floor(y / _this3.options.blockSize * 2);
+                    var j = Math.floor(x / _this3.options.blockSize);
+                    var i = Math.floor(y / _this3.options.blockSize);
                     if (i < _this3.options.rows && i >= 0 && j < _this3.options.columns && j >= 0) {
                         return { i: i, j: j };
                     } else {
@@ -385,58 +358,57 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                     }
                 };
 
-                // if touch screen(mobile device), jump to touch version
-                if (window.hasOwnProperty("ontouchstart")) {
-                    window.location.href = 'index_touch.html';
-                }
+                this.canvas.addEventListener('touchstart', function (event) {
+                    var coor = getBlockPosition(event.targetTouches[0].pageX - _this3.clientRect.left, event.targetTouches[0].pageY - _this3.clientRect.top);
 
-                var mouseDown = function mouseDown(event) {
-                    var coor = getBlockPosition(event.offsetX, event.offsetY);
-                    var currentButton = null;
-                    if (event.button + lastClickButton === 2 && Date.now() - lastClickTime < timeGap) {
-                        // left && right click
+                    var touchCancel = false;
+                    var touchMethod = null;
+                    if (lastTouchCoor.i === coor.i && lastTouchCoor.j === coor.j && Date.now() - lastTouchTime < timeGap) {
+                        // double touch
                         clearTimeout(timer);
-                        currentButton = 'lr';
-                        _this3._updateMap(currentButton, 'down', coor);
-                    } else if (event.button === 0) {
-                        // left click
-                        timer = setTimeout(function () {
-                            currentButton = 'l';
-                            _this3._updateMap(currentButton, 'down', coor);
-                        }, timeGap);
-                    } else if (event.button === 2) {
-                        // right click
-                        timer = setTimeout(function () {
-                            currentButton = 'r';
-                            _this3._updateMap(currentButton, 'down', coor);
-                        }, timeGap);
+                        touchMethod = 'db';
+                    } else {
+                        // single touch
+                        touchMethod = 't';
                     }
+                    // update current touch
+                    lastTouchTime = Date.now();
+                    lastTouchCoor.i = coor.i;
+                    lastTouchCoor.j = coor.j;
+                    // update face
+                    _this3._face.className = 'click';
 
-                    lastClickTime = Date.now();
-                    lastClickButton = event.button;
+                    var touchMove = function touchMove(event) {
+                        if (touchCancel) {
+                            return;
+                        }
+                        var rect = event.target.getBoundingClientRect();
+                        var coor = getBlockPosition(event.changedTouches[0].pageX - _this3.clientRect.left, event.changedTouches[0].pageY - _this3.clientRect.top);
 
-                    var mouseMove = function mouseMove(event) {
-                        var coor = getBlockPosition(event.offsetX, event.offsetY);
-                        if (currentButton === 'l' || currentButton === 'lr') {
-                            _this3._updateMap(currentButton, 'move', coor);
+                        if (lastTouchCoor.i !== coor.i || lastTouchCoor.j !== coor.j) {
+                            touchCancel = true;
                         }
                     };
 
-                    var mouseUp = function mouseUp(event) {
-                        var coor = getBlockPosition(event.offsetX, event.offsetY);
-                        if (currentButton === 'l' || currentButton === 'lr') {
-                            _this3._updateMap(currentButton, 'up', coor);
+                    var touchEnd = function touchEnd(event) {
+                        if (!touchCancel) {
+                            if (touchMethod === 'db') {
+                                _this3._updateMap('db', coor);
+                            } else {
+                                timer = setTimeout(function () {
+                                    _this3._updateMap('t', coor);
+                                }, timeGap);
+                            }
                         }
-
-                        window.removeEventListener('mousemove', mouseMove);
-                        window.removeEventListener('mouseup', mouseUp);
+                        // update face
+                        _this3._face.className = 'normal';
+                        window.removeEventListener('touchmove', touchMove);
+                        window.removeEventListener('touchend', touchEnd);
                     };
-
-                    window.addEventListener('mousemove', mouseMove);
-                    window.addEventListener('mouseup', mouseUp);
-                };
-
-                this.canvas.addEventListener('mousedown', mouseDown);
+                    //
+                    window.addEventListener('touchmove', touchMove);
+                    window.addEventListener('touchend', touchEnd);
+                });
             }
         }, {
             key: '_gameOver',
@@ -555,6 +527,9 @@ define(['exports', 'js/block.min'], function (exports, _block) {
                 }();
 
                 if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+                window.scrollTo(0, 0);
+                this.clientRect = this.canvas.getBoundingClientRect();
+
                 this._initMap();
             }
         }, {
@@ -576,9 +551,9 @@ define(['exports', 'js/block.min'], function (exports, _block) {
             set: function set(_options) {
                 var options = {
                     gameArea: '',
-                    rows: 9,
-                    columns: 9,
-                    mineTotal: 10
+                    rows: 0,
+                    columns: 0,
+                    mineTotal: 0
                 };
 
                 for (var key in options) {
@@ -621,4 +596,4 @@ define(['exports', 'js/block.min'], function (exports, _block) {
     exports.default = MineSweeper;
 });
 
-//# sourceMappingURL=engine.js.map
+//# sourceMappingURL=engineTouch.js.map

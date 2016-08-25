@@ -95,10 +95,11 @@
 #minesweeper div.main-game div.digital-wrapper span {
   font-size: 32px;
   height: 24px;
+  line-height: 0.95;
+  padding-left: 2px;
+  letter-spacing: 1px;
   font-family: "LCD", sans-serif;
   color: red;
-  letter-spacing: 1px;
-  padding-left: 2px;
   background-color: black;
   border-left: 2px solid #808080;
   border-top: 2px solid #808080;
@@ -155,6 +156,7 @@
 #minesweeper div.main-game canvas {
   display: block;
   -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
   cursor: default;
   border-left: 4px solid #808080;
   border-top: 4px solid #808080;
@@ -163,12 +165,12 @@
 }
 .custom-level {
   display: none;
-  position: fixed;
+  position: absolute;
   width: 180px;
   left: 50%;
   top: 170px;
   margin-left: -102px;
-  padding: 20px 10px;
+  padding: 10px;
   font-size: 14px;
   background-color: #ece9d8;
   border: 2px solid #0055e5;
@@ -177,12 +179,15 @@
 .custom-level p {
   width: 100px;
   margin: 10px 0;
+  line-height: 24px;
+  font-size: 14px;
 }
 .custom-level p input {
   float: right;
   width: 40px;
+  padding: 1px;
   margin-left: 10px;
-  font-size: 12px;
+  font-size: 14px;
   border: 1px solid #7f9db9;
 }
 .custom-level div {
@@ -192,6 +197,11 @@
 }
 .custom-level div:last-child {
   top: 75px;
+}
+@media screen and (max-width: 600px) {
+  #minesweeper {
+    margin: 0 auto;
+  }
 }
 @media screen\0 {
   .digital-wrapper span {

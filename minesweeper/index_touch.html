@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>minesweeper</title>
     <link href="css/main.css" rel="stylesheet">
 </head>
@@ -9,7 +10,7 @@
 <div id="minesweeper"></div>
 <script src="js/require.min.js"></script>
 <script>
-    require(['js/engine'], function (MineSweeper) {
+    require(['js/engineTouch'], function (MineSweeper) {
         var ms = new MineSweeper.default({
             gameArea: 'minesweeper'
         });

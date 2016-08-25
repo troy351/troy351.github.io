@@ -104,10 +104,11 @@
       span {
         font-size: 32px;
         height: 24px;
+        line-height: 0.95;
+        padding-left: 2px;
+        letter-spacing: 1px;
         font-family: "LCD", sans-serif;
         color: red;
-        letter-spacing: 1px;
-        padding-left: 2px;
         background-color: black;
         .depress(2px);
         &:first-child {
@@ -156,6 +157,7 @@
     canvas {
       display: block;
       -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
       cursor: default;
       .depress(4px);
     }
@@ -164,12 +166,12 @@
 
 .custom-level {
   display: none;
-  position: fixed;
+  position: absolute;
   width: 180px;
   left: 50%;
   top: 170px;
   margin-left: -102px;
-  padding: 20px 10px;
+  padding: 10px;
   font-size: 14px;
   background-color: #ece9d8;
   border: 2px solid #0055e5;
@@ -177,11 +179,14 @@
   p {
     width: 100px;
     margin: 10px 0;
+    line-height: 24px;
+    font-size: 14px;
     input {
       float: right;
       width: 40px;
+      padding: 1px;
       margin-left: 10px;
-      font-size: 12px;
+      font-size: 14px;
       border: 1px solid #7f9db9;
     }
   }
@@ -195,9 +200,15 @@
   }
 }
 
-@hack:~"screen\0";
+@media screen and (max-width: 600px) {
+  #minesweeper {
+    margin: 0 auto;
+  }
+}
+
+@hack: ~"screen\0";
 @media @hack {
-  .digital-wrapper span{
+  .digital-wrapper span {
     line-height: 0.8;
   }
 }
