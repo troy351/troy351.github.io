@@ -324,8 +324,6 @@ export default class MineSweeper {
             lastTouchTime = Date.now();
             lastTouchCoor.i = coor.i;
             lastTouchCoor.j = coor.j;
-            // update face
-            this._face.className = 'click';
 
             const touchMove = (event)=> {
                 if (touchCancel) {
@@ -349,8 +347,6 @@ export default class MineSweeper {
                         }, timeGap)
                     }
                 }
-                // update face
-                this._face.className = 'normal';
                 window.removeEventListener('touchmove', touchMove);
                 window.removeEventListener('touchend', touchEnd);
             };

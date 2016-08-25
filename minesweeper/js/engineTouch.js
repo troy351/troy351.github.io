@@ -375,8 +375,6 @@ define(['exports', 'js/block'], function (exports, _block) {
                     lastTouchTime = Date.now();
                     lastTouchCoor.i = coor.i;
                     lastTouchCoor.j = coor.j;
-                    // update face
-                    _this3._face.className = 'click';
 
                     var touchMove = function touchMove(event) {
                         if (touchCancel) {
@@ -400,8 +398,6 @@ define(['exports', 'js/block'], function (exports, _block) {
                                 }, timeGap);
                             }
                         }
-                        // update face
-                        _this3._face.className = 'normal';
                         window.removeEventListener('touchmove', touchMove);
                         window.removeEventListener('touchend', touchEnd);
                     };
