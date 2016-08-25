@@ -334,11 +334,6 @@ export default class MineSweeper {
             }
         };
 
-        // if touch screen(mobile device), jump to touch version
-        if (window.hasOwnProperty("ontouchstart")) {
-            window.location.href = 'index_touch.html';
-        }
-
         const mouseDown = (event)=> {
             const coor = getBlockPosition(event.offsetX, event.offsetY);
             let currentButton = null;

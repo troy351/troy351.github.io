@@ -9,6 +9,11 @@
 <div id="minesweeper"></div>
 <script src="js/require.min.js"></script>
 <script>
+    // if touch screen(mobile device), jump to touch version
+    if (window.hasOwnProperty("ontouchstart")) {
+        window.location.href = 'index_touch.html';
+    }
+
     require(['js/engine'], function (MineSweeper) {
         var ms = new MineSweeper.default({
             gameArea: 'minesweeper'

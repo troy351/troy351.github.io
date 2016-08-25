@@ -385,11 +385,6 @@ define(['exports', 'js/block'], function (exports, _block) {
                     }
                 };
 
-                // if touch screen(mobile device), jump to touch version
-                if (window.hasOwnProperty("ontouchstart")) {
-                    window.location.href = 'index_touch.html';
-                }
-
                 var mouseDown = function mouseDown(event) {
                     var coor = getBlockPosition(event.offsetX, event.offsetY);
                     var currentButton = null;
