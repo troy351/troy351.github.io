@@ -1,4 +1,4 @@
-import Block from 'js/block.min';
+import Block from 'js/block';
 
 export default class MineSweeper {
     constructor(options) {
