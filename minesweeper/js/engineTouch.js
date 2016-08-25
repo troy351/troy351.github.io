@@ -62,15 +62,15 @@ define(['exports', 'js/block'], function (exports, _block) {
                 this.gameArea = document.getElementById(this.options.gameArea);
 
                 // menu
-                this._menuWrapper = document.createElement('div');
-                this._menuWrapper.className = 'menu';
-                this._menuWrapper.innerHTML = '<span>Menu</span>';
+                var menuWrapper = document.createElement('div');
+                menuWrapper.className = 'menu';
+                menuWrapper.innerHTML = '<span>Menu</span>';
                 this._menu = document.createElement('ul');
                 this._menu.innerHTML = '<li>Start</li><a class="gap"></a><li class="current">Easy</li><li>Normal</li><li>Hard</li><li>Custom</li>';
-                this._menuWrapper.appendChild(this._menu);
-                this.gameArea.appendChild(this._menuWrapper);
+                menuWrapper.appendChild(this._menu);
+                this.gameArea.appendChild(menuWrapper);
 
-                var menuButton = this._menuWrapper.getElementsByTagName('span')[0];
+                var menuButton = menuWrapper.getElementsByTagName('span')[0];
                 // event for menu show
                 menuButton.addEventListener('click', function (event) {
                     _this._menu.style.display = 'block';
@@ -93,10 +93,10 @@ define(['exports', 'js/block'], function (exports, _block) {
                     }
                 });
                 // for custom level setter
-                this._levelSelector = document.createElement('div');
-                this._levelSelector.className = 'custom-level';
-                this._levelSelector.innerHTML = '\n            <form>\n                <p>Width: <input type="number" title="width"></p>\n                <p>Height: <input type="number" title="height"></p>\n                <p>Mines: <input type="number" title="mines"></p>\n                <div><input type="submit" value="Submit"></div>\n                <div><input type="button" value="Cancel"></div>\n            </form>';
-                document.body.appendChild(this._levelSelector);
+                this._levelSel = document.createElement('div');
+                this._levelSel.className = 'custom-level';
+                this._levelSel.innerHTML = '\n            <form>\n                <p>Width: <input type="text" title="width"></p>\n                <p>Height: <input type="text" title="height"></p>\n                <p>Mines: <input type="text" title="mines"></p>\n                <div><input type="submit" value="Submit"></div>\n                <div><input type="button" value="Cancel"></div>\n            </form>';
+                document.body.appendChild(this._levelSel);
 
                 var mainGame = document.createElement('div');
                 mainGame.className = 'main-game';
@@ -495,14 +495,14 @@ define(['exports', 'js/block'], function (exports, _block) {
                             clearInterval(_this4.timer);
                             _this4.selectingLevel = true;
                             // append current data
-                            var inputs = _this4._levelSelector.getElementsByTagName('input');
+                            var inputs = _this4._levelSel.getElementsByTagName('input');
                             inputs[0].value = _this4.options.columns;
                             inputs[1].value = _this4.options.rows;
                             inputs[2].value = _this4.options.mineTotal;
                             // add button listener
                             inputs[3].addEventListener('click', function (event) {
                                 _this4._menu.innerHTML = '<li>Start</li><a class="gap"></a><li>Easy</li><li>Normal</li><li>Hard</li><li class="current">Custom</li>';
-                                _this4._levelSelector.style.display = 'none';
+                                _this4._levelSel.style.display = 'none';
                                 var options = {
                                     rows: parseInt(inputs[1].value),
                                     columns: parseInt(inputs[0].value),
@@ -513,11 +513,11 @@ define(['exports', 'js/block'], function (exports, _block) {
                                 event.preventDefault();
                             });
                             inputs[4].addEventListener('click', function (event) {
-                                _this4._levelSelector.style.display = 'none';
+                                _this4._levelSel.style.display = 'none';
                                 _this4.selectingLevel = false;
                             });
                             // show level selector
-                            _this4._levelSelector.style.display = 'block';
+                            _this4._levelSel.style.display = 'block';
                             return {
                                 v: void 0
                             };

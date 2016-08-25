@@ -13,15 +13,15 @@ export default class MineSweeper {
         this.gameArea = document.getElementById(this.options.gameArea);
 
         // menu
-        this._menuWrapper = document.createElement('div');
-        this._menuWrapper.className = 'menu';
-        this._menuWrapper.innerHTML = '<span>Menu</span>';
+        const menuWrapper = document.createElement('div');
+        menuWrapper.className = 'menu';
+        menuWrapper.innerHTML = '<span>Menu</span>';
         this._menu = document.createElement('ul');
         this._menu.innerHTML = '<li>Start</li><a class="gap"></a><li class="current">Easy</li><li>Normal</li><li>Hard</li><li>Custom</li>';
-        this._menuWrapper.appendChild(this._menu);
-        this.gameArea.appendChild(this._menuWrapper);
+        menuWrapper.appendChild(this._menu);
+        this.gameArea.appendChild(menuWrapper);
 
-        const menuButton = this._menuWrapper.getElementsByTagName('span')[0];
+        const menuButton = menuWrapper.getElementsByTagName('span')[0];
         // event for menu show
         menuButton.addEventListener('click', (event)=> {
             this._menu.style.display = 'block';
@@ -44,18 +44,17 @@ export default class MineSweeper {
             }
         });
         // for custom level setter
-        this._levelSelector = document.createElement('div');
-        this._levelSelector.className = 'custom-level';
-        this._levelSelector.innerHTML = `
+        this._levelSel = document.createElement('div');
+        this._levelSel.className = 'custom-level';
+        this._levelSel.innerHTML = `
             <form>
-                <p>Width: <input type="number" title="width"></p>
-                <p>Height: <input type="number" title="height"></p>
-                <p>Mines: <input type="number" title="mines"></p>
+                <p>Width: <input type="text" title="width"></p>
+                <p>Height: <input type="text" title="height"></p>
+                <p>Mines: <input type="text" title="mines"></p>
                 <div><input type="submit" value="Submit"></div>
                 <div><input type="button" value="Cancel"></div>
             </form>`;
-        document.body.appendChild(this._levelSelector);
-
+        document.body.appendChild(this._levelSel);
 
         const mainGame = document.createElement('div');
         mainGame.className = 'main-game';
@@ -438,14 +437,14 @@ export default class MineSweeper {
                 clearInterval(this.timer);
                 this.selectingLevel = true;
                 // append current data
-                const inputs = this._levelSelector.getElementsByTagName('input');
+                const inputs = this._levelSel.getElementsByTagName('input');
                 inputs[0].value = this.options.columns;
                 inputs[1].value = this.options.rows;
                 inputs[2].value = this.options.mineTotal;
                 // add button listener
                 inputs[3].addEventListener('click', (event)=> {
                     this._menu.innerHTML = '<li>Start</li><a class="gap"></a><li>Easy</li><li>Normal</li><li>Hard</li><li class="current">Custom</li>';
-                    this._levelSelector.style.display = 'none';
+                    this._levelSel.style.display = 'none';
                     const options = {
                         rows: parseInt(inputs[1].value),
                         columns: parseInt(inputs[0].value),
@@ -456,11 +455,11 @@ export default class MineSweeper {
                     event.preventDefault();
                 });
                 inputs[4].addEventListener('click', (event)=> {
-                    this._levelSelector.style.display = 'none';
+                    this._levelSel.style.display = 'none';
                     this.selectingLevel = false;
                 });
                 // show level selector
-                this._levelSelector.style.display = 'block';
+                this._levelSel.style.display = 'block';
                 return;
             default:
                 console.error('minesweeper: no such difficulty');
