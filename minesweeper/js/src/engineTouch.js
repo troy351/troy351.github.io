@@ -292,7 +292,7 @@ export default class MineSweeper {
     }
 
     _startGame() {
-        const timeGap = 200;
+        const timeGap = 300;
         let lastTouchCoor = {i: 0, j: 0};
         let lastTouchTime = 0;
         let timer = null;

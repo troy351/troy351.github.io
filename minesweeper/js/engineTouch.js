@@ -343,7 +343,7 @@ define(['exports', 'js/block'], function (exports, _block) {
             value: function _startGame() {
                 var _this3 = this;
 
-                var timeGap = 200;
+                var timeGap = 300;
                 var lastTouchCoor = { i: 0, j: 0 };
                 var lastTouchTime = 0;
                 var timer = null;
