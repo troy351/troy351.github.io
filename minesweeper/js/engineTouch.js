@@ -248,7 +248,7 @@ define(['exports', 'js/block'], function (exports, _block) {
                 }
 
                 // for single touch on unknown block
-                if (coor !== false && method === 't' && this.map[coor.i][coor.j].type !== 'blank' && this.map[coor.i][coor.j].type !== 'number') {
+                if (coor !== false && method === 't' && this.map[coor.i][coor.j].type === 'cover') {
                     if (this.firstTouch) {
                         this.firstTouch = false;
                         this._setMines(coor);
@@ -276,7 +276,7 @@ define(['exports', 'js/block'], function (exports, _block) {
                                 }
                             }
                         }
-                        // show blocks around coor
+                        // expand map
                         if (flags === this.map[coor.i][coor.j].number) {
                             for (var _x = coor.i - 1; _x <= coor.i + 1; _x++) {
                                 for (var _y = coor.j - 1; _y <= coor.j + 1; _y++) {
@@ -363,18 +363,21 @@ define(['exports', 'js/block'], function (exports, _block) {
 
                     var touchCancel = false;
                     var touchMethod = null;
-                    if (lastTouchCoor.i === coor.i && lastTouchCoor.j === coor.j && Date.now() - lastTouchTime < timeGap) {
+                    // allow one block offset
+                    console.log(Math.abs(lastTouchCoor.i - coor.i) + Math.abs(lastTouchCoor.j - coor.j));
+                    console.log(Date.now() - lastTouchTime);
+                    if (Math.abs(lastTouchCoor.i - coor.i) + Math.abs(lastTouchCoor.j - coor.j) < 2 && Date.now() - lastTouchTime < timeGap) {
                         // double touch
                         clearTimeout(timer);
                         touchMethod = 'db';
                     } else {
                         // single touch
                         touchMethod = 't';
+                        lastTouchCoor.i = coor.i;
+                        lastTouchCoor.j = coor.j;
                     }
                     // update current touch
                     lastTouchTime = Date.now();
-                    lastTouchCoor.i = coor.i;
-                    lastTouchCoor.j = coor.j;
 
                     var touchMove = function touchMove(event) {
                         if (touchCancel) {
@@ -382,8 +385,8 @@ define(['exports', 'js/block'], function (exports, _block) {
                         }
                         var rect = event.target.getBoundingClientRect();
                         var coor = getBlockPosition(event.changedTouches[0].pageX - _this3.clientRect.left, event.changedTouches[0].pageY - _this3.clientRect.top);
-
-                        if (lastTouchCoor.i !== coor.i || lastTouchCoor.j !== coor.j) {
+                        // offset more than two blocks
+                        if (Math.abs(lastTouchCoor.i - coor.i) + Math.abs(lastTouchCoor.j - coor.j) >= 2) {
                             touchCancel = true;
                         }
                     };

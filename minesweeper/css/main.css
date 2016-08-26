@@ -1,3 +1,6 @@
+body {
+  touch-action: manipulation;
+}
 @font-face {
   font-family: "LCD";
   font-style: normal;

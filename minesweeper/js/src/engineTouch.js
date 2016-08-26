@@ -201,7 +201,7 @@ export default class MineSweeper {
         }
 
         // for single touch on unknown block
-        if (coor !== false && method === 't' && this.map[coor.i][coor.j].type !== 'blank' && this.map[coor.i][coor.j].type !== 'number') {
+        if (coor !== false && method === 't' && this.map[coor.i][coor.j].type === 'cover') {
             if (this.firstTouch) {
                 this.firstTouch = false;
                 this._setMines(coor);
@@ -229,7 +229,7 @@ export default class MineSweeper {
                         }
                     }
                 }
-                // show blocks around coor
+                // expand map
                 if (flags === this.map[coor.i][coor.j].number) {
                     for (let x = coor.i - 1; x <= coor.i + 1; x++) {
                         for (let y = coor.j - 1; y <= coor.j + 1; y++) {
@@ -312,18 +312,21 @@ export default class MineSweeper {
 
             let touchCancel = false;
             let touchMethod = null;
-            if (lastTouchCoor.i === coor.i && lastTouchCoor.j === coor.j && Date.now() - lastTouchTime < timeGap) {
+            // allow one block offset
+            console.log(Math.abs(lastTouchCoor.i - coor.i) + Math.abs(lastTouchCoor.j - coor.j));
+            console.log(Date.now() - lastTouchTime);
+            if ((Math.abs(lastTouchCoor.i - coor.i) + Math.abs(lastTouchCoor.j - coor.j) < 2) && Date.now() - lastTouchTime < timeGap) {
                 // double touch
                 clearTimeout(timer);
                 touchMethod = 'db';
             } else {
                 // single touch
                 touchMethod = 't';
+                lastTouchCoor.i = coor.i;
+                lastTouchCoor.j = coor.j;
             }
             // update current touch
             lastTouchTime = Date.now();
-            lastTouchCoor.i = coor.i;
-            lastTouchCoor.j = coor.j;
 
             const touchMove = (event)=> {
                 if (touchCancel) {
@@ -331,8 +334,8 @@ export default class MineSweeper {
                 }
                 var rect = event.target.getBoundingClientRect();
                 const coor = getBlockPosition(event.changedTouches[0].pageX - this.clientRect.left, event.changedTouches[0].pageY - this.clientRect.top);
-
-                if (lastTouchCoor.i !== coor.i || lastTouchCoor.j !== coor.j) {
+                // offset more than two blocks
+                if (Math.abs(lastTouchCoor.i - coor.i) + Math.abs(lastTouchCoor.j - coor.j) >= 2) {
                     touchCancel = true;
                 }
             };
