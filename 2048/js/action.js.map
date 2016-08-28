@@ -1,0 +1,1 @@
+{"version":3,"sources":["src/action.js"],"names":[],"mappings":";;;;;;;;;;;;;MAAqB,M;;;;oBAAA,M","file":"action.js","sourcesContent":["export default class action{\n\n}"]}

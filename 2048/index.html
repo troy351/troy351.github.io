@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>minesweeper</title>
+    <link href="css/main.css" rel="stylesheet">
+</head>
+<body>
+<div id="game2048"></div>
+<script src="js/require.min.js"></script>
+<script>
+    // if not touch screen, jump to desktop version
+//    if (!window.hasOwnProperty("ontouchstart")) {
+//        window.location.href = 'index.html';
+//    }
+
+    require(['js/engine'], function (Game2048) {
+        var g2048 = new Game2048.default({
+            canvas: 'game2048'
+        });
+    });
+</script>
+<script src="/js/global.js"></script>
+</body>
+</html>
