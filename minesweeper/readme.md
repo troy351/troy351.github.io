@@ -1,5 +1,5 @@
 ## Overview
-Here is a minesweeper game made by Troy.
+Game Minesweeper, made by Troy.
 
 * max size: 30 x 24
 * min size: 9 x 9
