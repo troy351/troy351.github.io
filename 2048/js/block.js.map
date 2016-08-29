@@ -1,1 +1,0 @@
-{"version":3,"sources":["src/block.js"],"names":[],"mappings":";;;;;;;;;;;;;QAAqB,K,GACjB,iBAAc;AAAA;AACb,K;;sBAFgB,K;AAGpB","file":"block.js","sourcesContent":["export default class Block {\n    constructor() {\n    }\n};"]}
