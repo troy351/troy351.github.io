@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>clock demo</title>
+    <style>
+        .wrapper {
+            width: 222px;
+            height: 222px;
+            margin: 30px auto;
+            padding: 10px;
+            border-radius: 20%;
+            background-color: black;
+            transition: .15s ease-in-out;
+        }
+
+        .circle {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto;
+            padding: 10px;
+            border: 1px solid black;
+            background-color: white;
+        }
+
+        .circle::before {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 100px;
+            height: 0;
+            margin-top: 100px;
+            transform: rotateZ(-285deg);
+            transform-origin: 100px 0;
+            border: 1px solid red;
+        }
+
+        .smooth {
+            transition: 1s linear;
+        }
+
+        .buttons {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="circle smooth"></div>
+</div>
+<div class="buttons">
+    <input type="checkbox" id="shake"><label for="shake">shake</label><br>
+    <input type="radio" name="clock" value="smooth" id="smooth" checked><label for="smooth">smooth</label>
+    <input type="radio" name="clock" value="tick-tock" id="tick-tock"><label for="tick-tock">tick-tock</label>
+</div>
+<script>
+    var wrapper = document.getElementsByClassName('wrapper')[0];
+    var circle = document.getElementsByClassName('circle')[0];
+    var deg1 = 2, deg2 = 0;
+    var shakeTimer = 0;
+
+    document.getElementById('shake').addEventListener('change', function (event) {
+        if (event.target.checked) {
+            shakeTimer = setInterval(function () {
+                wrapper.style.transform = 'rotateZ(' + deg1 + 'deg)';
+                deg1 *= -1;
+            }, 150);
+        } else {
+            clearInterval(shakeTimer);
+            wrapper.style.transform = null;
+        }
+    });
+
+    document.getElementById('smooth').addEventListener('change', function (event) {
+        if (event.target.checked) {
+            addClass(circle, 'smooth');
+        }
+    });
+
+    document.getElementById('tick-tock').addEventListener('change', function (event) {
+        if (event.target.checked) {
+            removeClass(circle, 'smooth');
+        }
+    });
+
+    (function time() {
+        circle.style.transform = 'rotateZ(' + deg2 + 'deg)';
+        deg2 += 6;
+        setTimeout(function () {
+            time();
+        }, 1000);
+    })();
+
+    /* class operation functions from jQuery */
+    function hasClass(obj, cls) {
+        return obj.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+    }
+
+    function addClass(obj, cls) {
+        if (!this.hasClass(obj, cls)) obj.className += " " + cls;
+    }
+
+    function removeClass(obj, cls) {
+        if (hasClass(obj, cls)) {
+            var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+            obj.className = obj.className.replace(reg, ' ');
+        }
+    }
+</script>
+</body>
+</html>
