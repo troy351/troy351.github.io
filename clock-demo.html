@@ -25,14 +25,11 @@
             background-color: white;
         }
 
-        .circle::before {
-            content: '';
+        .second-hand {
             position: absolute;
-            display: block;
             width: 98px;
             height: 0;
             margin-top: 100px;
-            transform: rotateZ(-285deg);
             transform-origin: 100px 0;
             border: 1px solid red;
         }
@@ -48,7 +45,9 @@
 </head>
 <body>
 <div class="wrapper">
-    <div class="circle smooth"></div>
+    <div class="circle">
+        <div class="second-hand smooth"></div>
+    </div>
 </div>
 <div class="buttons">
     <input type="checkbox" id="shake"><label for="shake">shake</label><br>
@@ -57,15 +56,15 @@
 </div>
 <script>
     var wrapper = document.getElementsByClassName('wrapper')[0];
-    var circle = document.getElementsByClassName('circle')[0];
-    var deg1 = 2, deg2 = 0;
+    var secondHand = document.getElementsByClassName('second-hand')[0];
+    var shakeDeg = 2, secondHandDeg = 0;
     var shakeTimer = 0;
 
     document.getElementById('shake').addEventListener('change', function (event) {
         if (event.target.checked) {
             shakeTimer = setInterval(function () {
-                wrapper.style.transform = 'rotateZ(' + deg1 + 'deg)';
-                deg1 *= -1;
+                wrapper.style.transform = 'rotateZ(' + shakeDeg + 'deg)';
+                shakeDeg *= -1;
             }, 150);
         } else {
             clearInterval(shakeTimer);
@@ -75,19 +74,20 @@
 
     document.getElementById('smooth').addEventListener('change', function (event) {
         if (event.target.checked) {
-            addClass(circle, 'smooth');
+            addClass(secondHand, 'smooth');
         }
     });
 
     document.getElementById('tick-tock').addEventListener('change', function (event) {
         if (event.target.checked) {
-            removeClass(circle, 'smooth');
+            removeClass(secondHand, 'smooth');
         }
     });
 
     (function time() {
-        circle.style.transform = 'rotateZ(' + deg2 + 'deg)';
-        deg2 += 6;
+        secondHand.style.transform = 'rotateZ(' + secondHandDeg + 'deg)';
+        secondHandDeg += 6;
+
         setTimeout(function () {
             time();
         }, 1000);
