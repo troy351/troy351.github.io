@@ -5,7 +5,7 @@ window.onload = function () {
     sw.on('click', function () {
         if (navigator.userAgent.match(/iPhone|(iPad)/)) {
             audio.load();
-            audio.addEventListener('canplay', function () {
+            audio.addEventListener('canplaythrough', function () {
                 audio.play();
                 sw.fadeOut(300);
                 setTimeout(function () {
