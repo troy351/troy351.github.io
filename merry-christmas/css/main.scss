@@ -1,0 +1,146 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-image: linear-gradient(#0A0707 0%, #110C0D 50%, #0C090A 100%);
+}
+
+/* background lights */
+
+/* Colors */
+$colorCollection: (#D00010, #FEC641, #63C13B, #FE0016, #5C6C94, #6B0D05, #7D0006, #DB1913, #FEE34A, #2F8A27);
+
+/* Config */
+$lights: 50; // match lights in mark up
+$textColor: #FFFFFF;
+$totalAnimation: 5;
+$lightSize: 50;
+$blurLevel: 2;
+
+/* Pretty Lights */
+#lights {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  top: -50px;
+  left: -25px;
+}
+
+.light {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+@for $i from 1 through $lights {
+  $lightWidth: $lightSize + random(25);
+  $lightHeight: $lightWidth;
+  $lightVertical: random(100);
+  $lightHorizontal: random(100);
+  $lightBlur: $blurLevel + random($blurLevel);
+  $lightDelay: 10 + random(25);
+  $animation: 1 + random($totalAnimation);
+
+  .light:nth-child(#{$i}) {
+    width: $lightWidth + px;
+    height: $lightHeight + px;
+    top: #{$lightVertical + "%"};
+    left: #{$lightHorizontal + "%"};
+    background: nth($colorCollection, random(length($colorCollection)));
+    filter: blur($lightBlur + px);
+    animation: #{$lightDelay + s} #{"light" + $animation} linear infinite;
+  }
+}
+
+@for $i from 1 through $totalAnimation {
+  @keyframes light#{$i} {
+    25% {
+      opacity: (25 + random(50)) * 0.01;
+    }
+    50% {
+      opacity: 0;
+    }
+    75% {
+      opacity: (25 + random(50)) * 0.01;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+/* svgs */
+svg {
+  position: absolute;
+  display: none;
+  &#tree {
+    width: 90%;
+    left: 5%;
+    bottom: 15px;
+    z-index: 1;
+  }
+  &#grass {
+    width: 100%;
+    bottom: -6px;
+    z-index: 2;
+    opacity: 0.8;
+  }
+}
+
+/* bottom collector */
+#snow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  display: none;
+}
+
+canvas {
+  z-index: 2;
+}
+
+/* words */
+#words {
+  position: absolute;
+  width: 100%;
+  margin-top: 60px;
+  color: #ff1d1d;
+  text-align: center;
+  font-family: "SnellRoundhand-Bold", sans-serif;
+  background-image: linear-gradient(to right, #9328d6, #e2ba7f, #79d478, #0ea9b9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  opacity: 1;
+  transition: all 1s ease-in-out;
+  z-index: 1;
+  p {
+    opacity: 1;
+    margin: 0;
+    font-size: 40px;
+  }
+  p:last-child {
+    margin-top: 18px;
+    margin-left: 190px;
+    font-size: 25px;
+  }
+}
+
+/* flower */
+canvas#flower {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  left: 5%;
+  bottom: 110px;
+}
+
+.hide {
+  opacity: 0 !important;
+}
