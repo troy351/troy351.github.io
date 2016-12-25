@@ -5,7 +5,6 @@ window.onload = function () {
     sw.on('click', function () {
         if (navigator.userAgent.match(/iPhone|(iPad)/)) {
             var progress = setInterval(function () {
-                var t = audio.currentTime;
                 var d = audio.duration;
                 var z = audio.buffered.end(audio.buffered.length - 1);
                 sw.html('loading... ' + (Math.round(z * 100 / d)) + '%');
