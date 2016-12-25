@@ -51,12 +51,12 @@ function start() {
     // show words
     setTimeout(function () {
         $('#words').removeClass('hide');
-    }, 3000);
+    }, 4000);
 
     // show flowers
     setTimeout(function () {
         showFlowers();
-    }, 4000);
+    }, 5000);
 }
 
 function fillBackgroundLights(count) {
