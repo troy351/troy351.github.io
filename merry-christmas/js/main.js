@@ -5,6 +5,21 @@ window.onload = function () {
     sw.on('click', function () {
         if (navigator.userAgent.match(/iPhone|(iPad)/)) {
             audio.load();
+
+            audio.addEventListener('progress', function () {
+                var range = 0;
+                var bf = this.buffered;
+                var time = this.currentTime;
+
+                while (!(bf.start(range) <= time && time <= bf.end(range))) {
+                    range += 1;
+                }
+                var loadStartPercentage = bf.start(range) / this.duration;
+                var loadEndPercentage = bf.end(range) / this.duration;
+                var loadPercentage = loadEndPercentage - loadStartPercentage;
+                sw.html('loading... ' + loadPercentage + '%');
+            });
+
             audio.addEventListener('canplaythrough', function () {
                 audio.play();
                 sw.fadeOut(300);
@@ -12,6 +27,7 @@ window.onload = function () {
                     start();
                 }, 300);
             });
+
             setTimeout(function () {
                 sw.html('loading...')
             }, 600);
