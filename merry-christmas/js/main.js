@@ -13,7 +13,7 @@ window.onload = function () {
                 }, 300);
             });
             setTimeout(function () {
-                sw.html('加载中...')
+                sw.html('loading...')
             }, 600);
         } else {
             sw.fadeOut(500);
