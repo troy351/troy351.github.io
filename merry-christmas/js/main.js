@@ -4,19 +4,14 @@ window.onload = function () {
 
     sw.on('click', function () {
         if (navigator.userAgent.match(/iPhone|(iPad)/)) {
-            audio.addEventListener('progress', function () {
-                var range = 0;
-                var bf = this.buffered;
-                var time = this.currentTime;
+            var progress = setInterval(function () {
+                var t = audio.currentTime;
+                var d = audio.duration;
+                var z = audio.buffered.end(audio.buffered.length - 1);
+                sw.html('loading... ' + (Math.round(z * 100 / d)) + '%');
+                if (z === d) clearInterval(progress);
+            }, 100);
 
-                while (!(bf.start(range) <= time && time <= bf.end(range))) {
-                    range += 1;
-                }
-                var loadStartPercentage = bf.start(range) / this.duration;
-                var loadEndPercentage = bf.end(range) / this.duration;
-                var loadPercentage = loadEndPercentage - loadStartPercentage;
-                sw.html('loading... ' + loadPercentage + '%');
-            });
 
             audio.addEventListener('canplaythrough', function () {
                 audio.play();
@@ -27,7 +22,7 @@ window.onload = function () {
             });
 
             audio.load();
-            
+
             setTimeout(function () {
                 sw.html('loading...')
             }, 600);
