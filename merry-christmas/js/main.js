@@ -1,15 +1,27 @@
 window.onload = function () {
-    $('#switch').on('click', function () {
-        if (navigator.userAgent.match(/iPhone|(iPad)/)) {
-            var audio = $('audio')[0];
-            audio.load();
-            audio.play();
-        }
+    var sw = $('#switch');
+    var audio = $('audio')[0];
 
-        $(this).fadeOut(500);
-        setTimeout(function () {
-            start();
-        }, 600);
+    sw.on('click', function () {
+        if (navigator.userAgent.match(/iPhone|(iPad)/)) {
+            audio.load();
+            audio.addEventListener('canplay', function () {
+                audio.play();
+                sw.fadeOut(300);
+                setTimeout(function () {
+                    start();
+                }, 300);
+            });
+            setTimeout(function () {
+                sw.html('加载中...')
+            }, 600);
+        } else {
+            sw.fadeOut(500);
+            setTimeout(function () {
+                start();
+                audio.play();
+            }, 600);
+        }
     });
 };
 
