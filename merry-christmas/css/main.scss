@@ -7,6 +7,109 @@ body, html {
   background-image: linear-gradient(#0A0707 0%, #110C0D 50%, #0C090A 100%);
 }
 
+/* switch */
+#switch {
+  position: absolute;
+  width: 180px;
+  height: 55px;
+  top: 50%;
+  left: 50%;
+  margin-top: -27px;
+  margin-left: -90px;
+
+  input {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 100;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    & ~ label i {
+      display: block;
+      height: 51px;
+      width: 51px;
+      position: absolute;
+      left: 2px;
+      top: 2px;
+      z-index: 2;
+      border-radius: inherit;
+      background: linear-gradient(#36455b, #283446);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 0 8px rgba(0, 0, 0, 0.3),
+      0 12px 12px rgba(0, 0, 0, 0.4);
+      transition: all .5s ease;
+    }
+
+    &:checked {
+      & ~ label {
+        & + span {
+          display: inline-block;
+          position: absolute;
+          width: 18px;
+          height: 18px;
+          border-radius: 10px;
+          -webkit-transition: all .5s ease;
+          transition: all .5s ease;
+          z-index: 2;
+          background: #b9f3fe;
+          background: linear-gradient(#ffffff, #77a1b9);
+          box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.1),
+          0 1px 0 rgba(255, 255, 255, 0.1),
+          0 0 10px rgba(100, 231, 253, 1),
+          inset 0 0 8px rgba(61, 157, 247, 0.8),
+          inset 0 -2px 5px rgba(185, 231, 253, 0.3),
+          inset 0 -3px 8px rgba(185, 231, 253, 0.5);
+        }
+        i {
+          left: 63%;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),
+          0 0 8px rgba(0, 0, 0, 0.3),
+          0 8px 8px rgba(0, 0, 0, 0.3),
+          inset -1px 0 1px #b9f3fe;
+          transition: all .5s ease;
+        }
+      }
+    }
+  }
+
+  label {
+    display: block;
+    width: 80%;
+    height: 100%;
+    position: relative;
+    background: linear-gradient(#121823, #161d2b);
+    border-radius: 30px 30px 30px 30px;
+    box-shadow: inset 0 3px 8px 1px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all .5s ease;
+
+    & + span {
+      display: inline-block;
+      position: absolute;
+      right: 0;
+      top: 17px;
+      width: 18px;
+      height: 18px;
+      border-radius: 10px;
+      background: linear-gradient(#36455b, #283446);
+      box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.2),
+      0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 10px rgba(185, 231, 253, 0),
+      inset 0 0 8px rgba(0, 0, 0, 0.9),
+      inset 0 -2px 5px rgba(0, 0, 0, 0.3),
+      inset 0 -5px 5px rgba(0, 0, 0, 0.5);
+      transition: all .5s ease;
+      z-index: 2;
+    }
+  }
+}
+
 /* background lights */
 
 /* Colors */
@@ -73,13 +176,13 @@ $blurLevel: 2;
 }
 
 /* svgs */
-svg {
+img {
   position: absolute;
   display: none;
   &#tree {
     width: 90%;
     left: 5%;
-    bottom: 15px;
+    bottom: 8px;
     z-index: 1;
   }
   &#grass {
@@ -109,13 +212,10 @@ canvas {
 #words {
   position: absolute;
   width: 100%;
-  margin-top: 60px;
+  margin-top: 30px;
   color: #ff1d1d;
   text-align: center;
   font-family: "SnellRoundhand-Bold", sans-serif;
-  background-image: linear-gradient(to right, #9328d6, #e2ba7f, #79d478, #0ea9b9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 
   opacity: 1;
   transition: all 1s ease-in-out;
@@ -124,6 +224,9 @@ canvas {
     opacity: 1;
     margin: 0;
     font-size: 40px;
+    background-image: linear-gradient(to right, #9328d6, #e2ba7f, #79d478, #0ea9b9);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
   }
   p:last-child {
     margin-top: 18px;
@@ -138,7 +241,7 @@ canvas#flower {
   width: 340px;
   height: 340px;
   left: 5%;
-  bottom: 110px;
+  bottom: 50px;
 }
 
 .hide {

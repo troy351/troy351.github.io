@@ -1,4 +1,19 @@
 window.onload = function () {
+    $('#switch').on('click', function () {
+        if (navigator.userAgent.match(/iPhone|(iPad)/)) {
+            var audioEl = $('audio')[0];
+            audioEl.load();
+            audioEl.play();
+        }
+
+        $(this).fadeOut(500);
+        setTimeout(function () {
+            start();
+        }, 600);
+    });
+};
+
+function start() {
     // show background lights
     fillBackgroundLights(50);
 
@@ -30,7 +45,7 @@ window.onload = function () {
     setTimeout(function () {
         showFlowers();
     }, 4000);
-};
+}
 
 function fillBackgroundLights(count) {
     var lightsElem = document.getElementById('lights');
