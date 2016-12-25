@@ -4,8 +4,6 @@ window.onload = function () {
 
     sw.on('click', function () {
         if (navigator.userAgent.match(/iPhone|(iPad)/)) {
-            audio.load();
-
             audio.addEventListener('progress', function () {
                 var range = 0;
                 var bf = this.buffered;
@@ -28,6 +26,8 @@ window.onload = function () {
                 }, 300);
             });
 
+            audio.load();
+            
             setTimeout(function () {
                 sw.html('loading...')
             }, 600);
