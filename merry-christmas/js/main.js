@@ -1,9 +1,9 @@
 window.onload = function () {
     $('#switch').on('click', function () {
         if (navigator.userAgent.match(/iPhone|(iPad)/)) {
-            var audioEl = $('audio')[0];
-            audioEl.load();
-            audioEl.play();
+            var audio = $('audio')[0];
+            audio.load();
+            audio.play();
         }
 
         $(this).fadeOut(500);
